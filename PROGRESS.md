@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 1 — Foundation in corso
-**Sprint corrente:** Sprint 1 (Task 1.4)
+**Sprint corrente:** Sprint 1 (Task 1.5)
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -33,7 +33,12 @@
   - ✅ Protezione route in App.tsx
   - ✅ Gestione onAuthStateChange e session persistence
   - 🔐 Magic link OTP via Supabase Auth
-- [ ] Task 1.4: AppShell + BottomNav + Routing
+- [x] Task 1.4: AppShell + BottomNav + Routing *(completato 2026-02-12)*
+  - ✅ AppShell.tsx con header dinamico e safe areas iOS
+  - ✅ BottomNav.tsx con 3 tab (Oggi, Settimana, Backlog)
+  - ✅ React Router v6 configurato
+  - ✅ Pagine stub: DayPage, WeekPage, BacklogPage
+  - 🎨 Icone lucide-react (Calendar, CalendarDays, List)
 - [ ] Task 1.5: Zustand Task Store + Supabase CRUD base
 - [ ] Task 1.6: WeightBadge + TaskCard base
 
@@ -72,13 +77,13 @@
 ## Avanzamento
 
 ```
-Sprint 1  [███░░░] 3/6   (50%)
+Sprint 1  [████░░] 4/6   (67%)
 Sprint 2  [░░░░░░] 0/6   (0%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [███░░░] 3/24 task  (13%)
+TOTALE    [████░░] 4/24 task  (17%)
 ```
 
 ---

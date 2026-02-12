@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+@layer base {
+  :root {
+    /* iOS-inspired color palette */
+    --color-background-main: #f2f2f7;
+    --color-background-card: #ffffff;
+    --color-background-section: #efeff4;
+
+    --color-text-primary: #1c1c1e;
+    --color-text-secondary: #8e8e93;
+    --color-text-placeholder: #c7c7cc;
+
+    --color-primary: #007aff;
+    --color-destructive: #ff3b30;
+    --color-success: #34c759;
+    --color-warning: #ff9500;
+    --color-separator: rgb(198 198 200 / 0.3);
+
+    /* Task weight colors */
+    --color-weight-1: #34c759;
+    --color-weight-2: #007aff;
+    --color-weight-3: #ff9f0a;
+    --color-weight-4: #ff6b00;
+    --color-weight-5: #ff3b30;
+
+    /* Typography */
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  * {
+    border-color: var(--color-separator);
+  }
+
+  body {
+    background-color: var(--color-background-main);
+    color: var(--color-text-primary);
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'SF Pro',
+      Roboto,
+      Inter,
+      sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    min-width: 320px;
+  }
+
+  /* iOS safe areas support */
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-right: max(0px, env(safe-area-inset-right));
+    }
+  }
+}

@@ -4,16 +4,23 @@
 
 ## Stato Attuale
 
-**Fase:** Documentazione completata — pronto per iniziare sviluppo
-**Sprint corrente:** Non iniziato
-**Ultimo aggiornamento:** 2025-02-12
+**Fase:** Sprint 1 — Foundation in corso
+**Sprint corrente:** Sprint 1 (Task 1.2)
+**Ultimo aggiornamento:** 2026-02-12
+**Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
 
 ---
 
 ## Sprint 1 — Foundation
 
-- [ ] Task 1.1: Setup progetto Vite + React + TypeScript + PWA
-- [ ] Task 1.2: Setup Supabase + Schema DB
+- [x] Task 1.1: Setup progetto Vite + React + TypeScript + PWA *(completato 2026-02-12)*
+  - ✅ Vite 7.3 + React 18.2 + TypeScript 5.9 strict
+  - ✅ Tailwind CSS v4 con palette iOS (CSS variables)
+  - ✅ vite-plugin-pwa + manifest configurato
+  - ✅ ESLint + Prettier integrati
+  - ✅ Struttura cartelle completa + tipi TypeScript
+  - 📦 Build: 194 KB gzipped
+- [ ] Task 1.2: Setup Supabase + Schema DB *(in corso)*
 - [ ] Task 1.3: Autenticazione Magic Link
 - [ ] Task 1.4: AppShell + BottomNav + Routing
 - [ ] Task 1.5: Zustand Task Store + Supabase CRUD base
@@ -54,13 +61,13 @@
 ## Avanzamento
 
 ```
-Sprint 1  [░░░░░░] 0/6   (0%)
-Sprint 2  [░░░░░░] 0/6   (0%)  [nota: 8 sessioni, 6 task]
+Sprint 1  [█░░░░░] 1/6   (17%)
+Sprint 2  [░░░░░░] 0/6   (0%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [░░░░░░] 0/24 task  (0%)
+TOTALE    [█░░░░░] 1/24 task  (4%)
 ```
 
 ---
@@ -73,6 +80,8 @@ TOTALE    [░░░░░░] 0/24 task  (0%)
 | 2025-02-12 | Supabase Magic Link | No password da gestire |
 | 2025-02-12 | @dnd-kit invece di react-beautiful-dnd | Migliore supporto touch/mobile |
 | 2025-02-12 | Zustand invece di Redux | Meno boilerplate per progetto personale |
+| 2026-02-12 | Tailwind CSS v4 con CSS variables | Compatibilità con nuova versione, no extend colors |
+| 2026-02-12 | Branch `claude/sprint-1-*` | Sistema GitHub richiede prefisso claude/ + session ID |
 
 ---
 

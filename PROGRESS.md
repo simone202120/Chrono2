@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 1 — Foundation in corso
-**Sprint corrente:** Sprint 1 (Task 1.2)
+**Sprint corrente:** Sprint 1 (Task 1.3)
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -20,7 +20,13 @@
   - ✅ ESLint + Prettier integrati
   - ✅ Struttura cartelle completa + tipi TypeScript
   - 📦 Build: 194 KB gzipped
-- [ ] Task 1.2: Setup Supabase + Schema DB *(in corso)*
+- [x] Task 1.2: Setup Supabase + Schema DB *(completato 2026-02-12)*
+  - ✅ Client Supabase in src/lib/supabase.ts
+  - ✅ Migration SQL completa (tasks + push_subscriptions)
+  - ✅ RLS policies configurate
+  - ✅ Trigger updated_at attivo
+  - ✅ Tipi TypeScript aggiornati (TaskStatus, recurrence)
+  - 📋 Schema: 2 tabelle, 2 enum, 5 indici
 - [ ] Task 1.3: Autenticazione Magic Link
 - [ ] Task 1.4: AppShell + BottomNav + Routing
 - [ ] Task 1.5: Zustand Task Store + Supabase CRUD base
@@ -61,13 +67,13 @@
 ## Avanzamento
 
 ```
-Sprint 1  [█░░░░░] 1/6   (17%)
+Sprint 1  [██░░░░] 2/6   (33%)
 Sprint 2  [░░░░░░] 0/6   (0%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [█░░░░░] 1/24 task  (4%)
+TOTALE    [██░░░░] 2/24 task  (8%)
 ```
 
 ---

@@ -132,15 +132,51 @@ try {
 }
 ```
 
-## Commit convention
+## Git Workflow & Branching Strategy
+
+### Strategia di Branch
+
+**Un branch per Sprint**, NON un branch per task:
+
+- **Sprint 1**: `feature/sprint-1` → 6 task → 6 commit → 1 PR
+- **Sprint 2**: `feature/sprint-2` → 6 task → 6 commit → 1 PR
+- **Sprint 3**: `feature/sprint-3` → 4 task → 4 commit → 1 PR
+- **Sprint 4**: `feature/sprint-4` → 4 task → 4 commit → 1 PR
+- **Sprint 5**: `feature/sprint-5` → 4 task → 4 commit → 1 PR
+
+### Workflow per ogni Sprint
+
+1. **Inizio Sprint**: crea branch `feature/sprint-N` da `main`
+2. **Durante Sprint**: per ogni task completato → commit + push
+3. **Fine Sprint**: verifica completa → crea PR → merge in `main`
+
+### Commit Convention
 
 ```
-feat(sprint.task): descrizione breve
+feat(N.M): descrizione breve task
 fix(componente): cosa è stato corretto
 refactor(store): cosa è cambiato e perché
 ```
 
-Esempio: `feat(1.6): add TaskCard with weight badge and swipe actions`
+Esempi:
+- `feat(1.1): setup vite + react + typescript + pwa`
+- `feat(1.6): add TaskCard with weight badge and swipe actions`
+- `fix(taskStore): handle null scheduled_at in filters`
+
+### Push dopo ogni task
+
+**IMPORTANTE**: dopo ogni task completato, fai SEMPRE:
+```bash
+git add .
+git commit -m "feat(N.M): descrizione"
+git push origin feature/sprint-N
+```
+
+Questo permette di:
+- Tracciare il progresso task per task
+- Avere checkpoint frequenti
+- Facilitare eventuali rollback
+- Vedere l'evoluzione dello sprint commit per commit
 
 ## Aggiornare PROGRESS.md
 

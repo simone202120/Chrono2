@@ -4,8 +4,8 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 1 — Foundation in corso
-**Sprint corrente:** Sprint 1 (Task 1.2)
+**Fase:** Sprint 1 COMPLETATO! 🎉
+**Sprint corrente:** Pronto per Sprint 2
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -20,11 +20,38 @@
   - ✅ ESLint + Prettier integrati
   - ✅ Struttura cartelle completa + tipi TypeScript
   - 📦 Build: 194 KB gzipped
-- [ ] Task 1.2: Setup Supabase + Schema DB *(in corso)*
-- [ ] Task 1.3: Autenticazione Magic Link
-- [ ] Task 1.4: AppShell + BottomNav + Routing
-- [ ] Task 1.5: Zustand Task Store + Supabase CRUD base
-- [ ] Task 1.6: WeightBadge + TaskCard base
+- [x] Task 1.2: Setup Supabase + Schema DB *(completato 2026-02-12)*
+  - ✅ Client Supabase in src/lib/supabase.ts
+  - ✅ Migration SQL completa (tasks + push_subscriptions)
+  - ✅ RLS policies configurate
+  - ✅ Trigger updated_at attivo
+  - ✅ Tipi TypeScript aggiornati (TaskStatus, recurrence)
+  - 📋 Schema: 2 tabelle, 2 enum, 5 indici
+- [x] Task 1.3: Autenticazione Magic Link *(completato 2026-02-12)*
+  - ✅ authStore.ts con Zustand (initialize, signIn, signOut)
+  - ✅ AuthPage.tsx con form email iOS-styled
+  - ✅ Protezione route in App.tsx
+  - ✅ Gestione onAuthStateChange e session persistence
+  - 🔐 Magic link OTP via Supabase Auth
+- [x] Task 1.4: AppShell + BottomNav + Routing *(completato 2026-02-12)*
+  - ✅ AppShell.tsx con header dinamico e safe areas iOS
+  - ✅ BottomNav.tsx con 3 tab (Oggi, Settimana, Backlog)
+  - ✅ React Router v6 configurato
+  - ✅ Pagine stub: DayPage, WeekPage, BacklogPage
+  - 🎨 Icone lucide-react (Calendar, CalendarDays, List)
+- [x] Task 1.5: Zustand Task Store + Supabase CRUD base *(completato 2026-02-12)*
+  - ✅ taskStore.ts con Zustand (SSOT per tasks)
+  - ✅ CRUD completo: fetchTasks, createTask, updateTask, deleteTask
+  - ✅ Optimistic updates con rollback automatico
+  - ✅ Error handling con user feedback
+  - 📊 Tutte le query Supabase passano dal store
+- [x] Task 1.6: WeightBadge + TaskCard base *(completato 2026-02-12)*
+  - ✅ WeightBadge.tsx (pill con colore peso 1-5)
+  - ✅ TaskCard.tsx con tutti gli indicatori visivi
+  - ✅ Icone: ⚠️ scadenza vicina, 🔁 ricorrente
+  - ✅ Stato completato: grigio + strikethrough
+  - ✅ Demo funzionante in DayPage
+  - 🎨 iOS-styled con transizione tap
 
 ## Sprint 2 — Core Task
 
@@ -61,13 +88,13 @@
 ## Avanzamento
 
 ```
-Sprint 1  [█░░░░░] 1/6   (17%)
+Sprint 1  [██████] 6/6   (100%) ✅
 Sprint 2  [░░░░░░] 0/6   (0%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [█░░░░░] 1/24 task  (4%)
+TOTALE    [██████] 6/24 task  (25%)
 ```
 
 ---

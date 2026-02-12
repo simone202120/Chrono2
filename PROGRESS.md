@@ -4,10 +4,10 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 1 COMPLETATO! 🎉
-**Sprint corrente:** Pronto per Sprint 2
+**Fase:** Sprint 2 — Core Task in corso
+**Sprint corrente:** Sprint 2 (Task 2.2)
 **Ultimo aggiornamento:** 2026-02-12
-**Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
+**Branch:** `claude/sprint-2-01JatdRkfc3Pd9Mr5GoRL9t2`
 
 ---
 
@@ -55,7 +55,14 @@
 
 ## Sprint 2 — Core Task
 
-- [ ] Task 2.1: TaskForm — creazione task
+- [x] Task 2.1: TaskForm — creazione task *(completato 2026-02-12)*
+  - ✅ TaskForm.tsx bottom sheet completo
+  - ✅ Tutti i campi: titolo, note, peso, scadenza, destinazione
+  - ✅ Selezione peso con 5 pill colorati
+  - ✅ Toggle Backlog / Calendario con campi condizionali
+  - ✅ Date/time pickers nativi
+  - ✅ CTA adattivo ("Salva nel Backlog" / "Schedula")
+  - ✅ Integrato con taskStore.createTask
 - [ ] Task 2.2: BacklogPanel + lista
 - [ ] Task 2.3: Filtri e ordinamento backlog
 - [ ] Task 2.4: Swipe actions su TaskCard
@@ -89,12 +96,12 @@
 
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
-Sprint 2  [░░░░░░] 0/6   (0%)
+Sprint 2  [█░░░░░] 1/6   (17%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [██████] 6/24 task  (25%)
+TOTALE    [███████] 7/24 task  (29%)
 ```
 
 ---

@@ -37,16 +37,11 @@ agile-planner/
 ├── PROJECT_BRIEF.md
 ├── ARCHITECTURE.md
 ├── DESIGN_SPEC.md
+├── PIANO_IMPLEMENTAZIONE.md
+├── CONVENTIONS.md
 ├── PROGRESS.md
 ├── CLAUDE.md
-├── GUIDA_SVILUPPO_UTENTE.md
-├── .gitignore
-├── docs/
-│   ├── PIANO_IMPLEMENTAZIONE.md
-│   ├── CONVENTIONS.md
-│   └── decisions/
-├── frontend/
-│   ├── README.md
+├── frontend/              (da creare nello Sprint 1)
 │   ├── .env.example
 │   └── src/
 │       ├── components/
@@ -55,7 +50,7 @@ agile-planner/
 │       ├── hooks/
 │       ├── lib/
 │       └── types/
-└── scripts/
+└── scripts/               (da creare nello Sprint 1)
 ```
 
 ## Documentazione
@@ -63,6 +58,7 @@ agile-planner/
 - [Project Brief](PROJECT_BRIEF.md) — problema, soluzione, funzionalità
 - [Architettura](ARCHITECTURE.md) — stack, DB schema, flussi
 - [Design Spec](DESIGN_SPEC.md) — wireframe, stili, UX
-- [Piano Implementazione](docs/PIANO_IMPLEMENTAZIONE.md) — sprint e task dettagliati
+- [Piano Implementazione](PIANO_IMPLEMENTAZIONE.md) — sprint e task dettagliati
+- [Conventions](CONVENTIONS.md) — convenzioni codice e naming
 - [Progress](PROGRESS.md) — stato avanzamento
 - [Claude.md](CLAUDE.md) — istruzioni per Claude Code

@@ -3,6 +3,23 @@
 > Task atomici da 2-3 ore, con prompt pronti per Claude Code.
 > Totale stimato: 30 sessioni (~75-90 ore)
 
+## Strategia Git & Branching
+
+**Un branch per Sprint**, commit + push dopo ogni task completato:
+
+- **Sprint 1**: branch `feature/sprint-1` → 6 task → 6 commit → 1 PR
+- **Sprint 2**: branch `feature/sprint-2` → 6 task → 6 commit → 1 PR
+- **Sprint 3**: branch `feature/sprint-3` → 4 task → 4 commit → 1 PR
+- **Sprint 4**: branch `feature/sprint-4` → 4 task → 4 commit → 1 PR
+- **Sprint 5**: branch `feature/sprint-5` → 4 task → 4 commit → 1 PR
+
+**Workflow per ogni Sprint:**
+1. Crea branch `feature/sprint-N` da `main`
+2. Per ogni task: sviluppo → commit → push
+3. A fine sprint: verifica → PR → merge in `main`
+
+**Commit message:** `feat(N.M): descrizione task` (es: `feat(1.1): setup vite + react + typescript`)
+
 ---
 
 ## SPRINT 1 — Foundation (6 sessioni)
@@ -17,7 +34,6 @@ Setup progetto, autenticazione, struttura base, tema iOS.
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Nessuna |
-| Branch | `feature/1.1-project-setup` |
 
 **Deliverable:**
 - [ ] Vite + React + TypeScript configurato
@@ -52,7 +68,6 @@ Riferimento design: DESIGN_SPEC.md
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 1.1 |
-| Branch | `feature/1.2-supabase-setup` |
 
 **Deliverable:**
 - [ ] Client Supabase configurato in `src/lib/supabase.ts`
@@ -84,7 +99,6 @@ Usa TypeScript strict.
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 1.2 |
-| Branch | `feature/1.3-auth` |
 
 **Deliverable:**
 - [ ] Pagina `AuthPage.tsx` con form email + pulsante magic link
@@ -116,7 +130,6 @@ Stile: DESIGN_SPEC.md palette, font system-ui, tutto centrato verticalmente su m
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 1.3 |
-| Branch | `feature/1.4-shell-nav` |
 
 **Deliverable:**
 - [ ] `AppShell.tsx` con header dinamico e safe areas iOS
@@ -151,7 +164,6 @@ Riferimento: DESIGN_SPEC.md sezione Layout
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 1.2 |
-| Branch | `feature/1.5-task-store` |
 
 **Deliverable:**
 - [ ] `taskStore.ts` con: tasks[], fetchTasks(), addTask(), updateTask(), deleteTask()
@@ -194,7 +206,6 @@ Usa ottimistic updates: aggiorna array locale prima, rollback se Supabase fallis
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 1.4, 1.5 |
-| Branch | `feature/1.6-task-card` |
 
 **Deliverable:**
 - [ ] `WeightBadge.tsx` — pallino colorato + numero
@@ -247,7 +258,6 @@ Form task, backlog completo, filtri, azioni swipe.
 |-------|--------|
 | Durata | 2 sessioni |
 | Dipendenze | Sprint 1 completo |
-| Branch | `feature/2.1-task-form` |
 
 **Deliverable:**
 - [ ] `TaskForm.tsx` — bottom sheet con tutti i campi
@@ -291,7 +301,6 @@ Comportamento:
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 2.1 |
-| Branch | `feature/2.2-backlog-panel` |
 
 **Deliverable:**
 - [ ] `BacklogPanel.tsx` con header contatore + pulsanti filtro
@@ -334,7 +343,6 @@ Footer:
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 2.2 |
-| Branch | `feature/2.3-backlog-filters` |
 
 **Deliverable:**
 - [ ] `BacklogFilters.tsx` — bottom sheet filtri
@@ -380,7 +388,6 @@ Badge: pulsante "Filtri" in BacklogPanel mostra numero di filtri attivi in badge
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 2.2 |
-| Branch | `feature/2.4-swipe-actions` |
 
 **Deliverable:**
 - [ ] Swipe sinistra → elimina (rosso)
@@ -420,7 +427,6 @@ Funziona sia in BacklogPanel che in DayView.
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 2.1 |
-| Branch | `feature/2.5-task-detail` |
 
 **Deliverable:**
 - [ ] `TaskDetail.tsx` — bottom sheet dettaglio task
@@ -466,7 +472,6 @@ Apertura: tap su TaskCard (non su swipe actions)
 |-------|--------|
 | Durata | 2 sessioni |
 | Dipendenze | Task 2.2, 2.5 |
-| Branch | `feature/2.6-day-view` |
 
 **Deliverable:**
 - [ ] `DayPage.tsx` completa con navigazione ◀▶ tra giorni
@@ -521,7 +526,6 @@ Vista settimana, drag & drop.
 |-------|--------|
 | Durata | 2 sessioni |
 | Dipendenze | Sprint 2 completo |
-| Branch | `feature/3.1-week-view` |
 
 **Deliverable:**
 - [ ] Griglia 7 giorni con header (Lu–Do + data)
@@ -563,7 +567,6 @@ Navigazione: useCalendar hook con getWeekDates(weekOffset: number)
 |-------|--------|
 | Durata | 2 sessioni |
 | Dipendenze | Task 3.1 |
-| Branch | `feature/3.2-drag-drop` |
 
 **Deliverable:**
 - [ ] @dnd-kit configurato con DndContext
@@ -607,7 +610,6 @@ Feedback haptico (se disponibile): navigator.vibrate(50) su drop
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 2.3 |
-| Branch | `feature/3.3-backlog-page` |
 
 **Deliverable:**
 - [ ] BacklogPage full screen con tutti i task backlog
@@ -651,7 +653,6 @@ FAB (Floating Action Button):
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 3.3 |
-| Branch | `feature/3.4-navigation-links` |
 
 **Deliverable:**
 - [ ] Tap su giorno in WeekView → DayPage con quella data
@@ -701,7 +702,6 @@ Task ricorrenti, notifiche push, PWA avanzata.
 |-------|--------|
 | Durata | 2 sessioni |
 | Dipendenze | Sprint 3 completo |
-| Branch | `feature/4.1-recurring-tasks` |
 
 **Deliverable:**
 - [ ] Form ricorrenza: giornaliero, settimanale (selezione giorni), mensile
@@ -752,7 +752,6 @@ Completare istanza:
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 1.2 |
-| Branch | `feature/4.2-push-setup` |
 
 **Deliverable:**
 - [ ] Service Worker con push handler
@@ -798,7 +797,6 @@ Implementa Web Push in agile-planner:
 |-------|--------|
 | Durata | 2 sessioni |
 | Dipendenze | Task 4.2 |
-| Branch | `feature/4.3-edge-function-cron` |
 
 **Deliverable:**
 - [ ] Edge Function `notify-due-tasks` in Deno
@@ -844,7 +842,6 @@ Tabella log (opzionale): notification_log (task_id, sent_at, status)
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Sprint 3 completo |
-| Branch | `feature/4.4-pwa-polish` |
 
 **Deliverable:**
 - [ ] Manifest completo (icone, splash screen, colori)
@@ -892,7 +889,6 @@ UX polish, animazioni, stabilità.
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Sprint 4 completo |
-| Branch | `feature/5.1-animations` |
 
 **Prompt per Claude Code:**
 ```
@@ -929,7 +925,6 @@ Aggiungi animazioni e micro-interazioni in agile-planner usando CSS transitions 
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 5.1 |
-| Branch | `feature/5.2-error-handling` |
 
 **Prompt per Claude Code:**
 ```
@@ -967,7 +962,6 @@ Implementa gestione errori robusta in agile-planner:
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Task 5.2 |
-| Branch | `feature/5.3-settings` |
 
 **Prompt per Claude Code:**
 ```
@@ -1003,7 +997,6 @@ Stile iOS Settings: lista con separatori, label grigie sezioni uppercase, frecci
 |-------|--------|
 | Durata | 1 sessione |
 | Dipendenze | Sprint 5 completo |
-| Branch | `main` |
 
 **Prompt per Claude Code:**
 ```

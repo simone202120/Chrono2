@@ -19,6 +19,39 @@ Prima di scrivere una riga di codice, leggi `PROGRESS.md` per sapere:
 Lavora SOLO sul task specificato nel prompt. Non anticipare task futuri.
 Se noti qualcosa da migliorare in un'area diversa, annotalo ma non intervenire.
 
+## Regola #3: Qualità del Codice e Architettura
+
+**MASSIMA ATTENZIONE ALLA QUALITÀ** — Il codice deve essere:
+- ✅ **Sintatticamente corretto**: zero errori TypeScript, zero warning ESLint
+- ✅ **Logicamente corretto**: funziona come previsto, gestisce edge cases
+- ✅ **Professionale**: leggibile, manutenibile, ben strutturato
+- ✅ **Type-safe**: tipi espliciti, no `any`, no casting non sicuri
+
+### Rispetto dell'architettura
+
+L'architettura è **RIGIDA** e deve essere rispettata:
+- Store Zustand è l'unica fonte di verità (SSOT)
+- Tutte le query Supabase passano da `taskStore.ts`
+- Componenti sono puri e non hanno logica di business
+- Hook custom per logica riutilizzabile, non nei componenti
+- Nessuna dipendenza circolare tra moduli
+
+### Gestione file
+
+**NON creare nuovi file senza necessità assoluta.** Prima di creare un file:
+1. Verifica se esiste già un file adatto per quella logica
+2. Se serve davvero, **CHIEDI AUTORIZZAZIONE ALL'UTENTE** prima di crearlo
+3. Posiziona il file nella **cartella corretta** secondo la struttura (vedi sotto)
+4. NON creare file in giro o in posizioni casuali
+
+### Comprensione delle librerie
+
+Prima di usare una libreria:
+- Usa **Context7** o documentazione ufficiale per capire bene l'API
+- Non improvvisare: leggi esempi e best practices
+- Verifica compatibilità con React 18, TypeScript strict, mobile
+- Preferisci API moderne e raccomandate dalla libreria
+
 ## Struttura progetto
 
 ```
@@ -99,15 +132,51 @@ try {
 }
 ```
 
-## Commit convention
+## Git Workflow & Branching Strategy
+
+### Strategia di Branch
+
+**Un branch per Sprint**, NON un branch per task:
+
+- **Sprint 1**: `feature/sprint-1` → 6 task → 6 commit → 1 PR
+- **Sprint 2**: `feature/sprint-2` → 6 task → 6 commit → 1 PR
+- **Sprint 3**: `feature/sprint-3` → 4 task → 4 commit → 1 PR
+- **Sprint 4**: `feature/sprint-4` → 4 task → 4 commit → 1 PR
+- **Sprint 5**: `feature/sprint-5` → 4 task → 4 commit → 1 PR
+
+### Workflow per ogni Sprint
+
+1. **Inizio Sprint**: crea branch `feature/sprint-N` da `main`
+2. **Durante Sprint**: per ogni task completato → commit + push
+3. **Fine Sprint**: verifica completa → crea PR → merge in `main`
+
+### Commit Convention
 
 ```
-feat(sprint.task): descrizione breve
+feat(N.M): descrizione breve task
 fix(componente): cosa è stato corretto
 refactor(store): cosa è cambiato e perché
 ```
 
-Esempio: `feat(1.6): add TaskCard with weight badge and swipe actions`
+Esempi:
+- `feat(1.1): setup vite + react + typescript + pwa`
+- `feat(1.6): add TaskCard with weight badge and swipe actions`
+- `fix(taskStore): handle null scheduled_at in filters`
+
+### Push dopo ogni task
+
+**IMPORTANTE**: dopo ogni task completato, fai SEMPRE:
+```bash
+git add .
+git commit -m "feat(N.M): descrizione"
+git push origin feature/sprint-N
+```
+
+Questo permette di:
+- Tracciare il progresso task per task
+- Avere checkpoint frequenti
+- Facilitare eventuali rollback
+- Vedere l'evoluzione dello sprint commit per commit
 
 ## Aggiornare PROGRESS.md
 

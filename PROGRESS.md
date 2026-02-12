@@ -4,8 +4,8 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 1 — Foundation in corso
-**Sprint corrente:** Sprint 1 (Task 1.6 - ULTIMO!)
+**Fase:** Sprint 1 COMPLETATO! 🎉
+**Sprint corrente:** Pronto per Sprint 2
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -45,7 +45,13 @@
   - ✅ Optimistic updates con rollback automatico
   - ✅ Error handling con user feedback
   - 📊 Tutte le query Supabase passano dal store
-- [ ] Task 1.6: WeightBadge + TaskCard base
+- [x] Task 1.6: WeightBadge + TaskCard base *(completato 2026-02-12)*
+  - ✅ WeightBadge.tsx (pill con colore peso 1-5)
+  - ✅ TaskCard.tsx con tutti gli indicatori visivi
+  - ✅ Icone: ⚠️ scadenza vicina, 🔁 ricorrente
+  - ✅ Stato completato: grigio + strikethrough
+  - ✅ Demo funzionante in DayPage
+  - 🎨 iOS-styled con transizione tap
 
 ## Sprint 2 — Core Task
 
@@ -82,13 +88,13 @@
 ## Avanzamento
 
 ```
-Sprint 1  [█████░] 5/6   (83%)
+Sprint 1  [██████] 6/6   (100%) ✅
 Sprint 2  [░░░░░░] 0/6   (0%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [█████░] 5/24 task  (21%)
+TOTALE    [██████] 6/24 task  (25%)
 ```
 
 ---

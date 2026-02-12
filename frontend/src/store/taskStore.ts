@@ -16,6 +16,7 @@ interface TaskActions {
     updates: TaskUpdatePayload
   ) => Promise<{ error: Error | null }>
   deleteTask: (id: string) => Promise<{ error: Error | null }>
+  completeTask: (id: string) => Promise<{ error: Error | null }>
   clearError: () => void
 }
 
@@ -155,6 +156,48 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       set(state => ({
         tasks: [...state.tasks, originalTask],
         error: 'Errore nell\'eliminazione del task',
+      }))
+
+      return { error: error as Error }
+    }
+  },
+
+  completeTask: async (id: string) => {
+    const originalTask = get().tasks.find(t => t.id === id)
+    if (!originalTask) {
+      return { error: new Error('Task non trovato') }
+    }
+
+    const completedTask = {
+      ...originalTask,
+      status: 'done' as const,
+      completed_at: new Date().toISOString(),
+    }
+
+    // Optimistic update
+    set(state => ({
+      tasks: state.tasks.map(t => (t.id === id ? completedTask : t)),
+    }))
+
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .update({
+          status: 'done',
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error completing task:', error)
+
+      // Rollback
+      set(state => ({
+        tasks: state.tasks.map(t => (t.id === id ? originalTask : t)),
+        error: 'Errore nel completamento del task',
       }))
 
       return { error: error as Error }

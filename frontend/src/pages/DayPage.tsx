@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { AppShell } from '@/components/layout/AppShell'
-import { TaskCard } from '@/components/task/TaskCard'
+import { SwipeableTaskCard } from '@/components/task/SwipeableTaskCard'
+import { TaskForm } from '@/components/task/TaskForm'
 import { Plus } from 'lucide-react'
 import type { Task } from '@/types/task'
 
@@ -40,19 +42,23 @@ const demoTasks: Task[] = [
 ]
 
 export function DayPage() {
+  const [showForm, setShowForm] = useState(false)
+
   return (
-    <AppShell
-      title="Oggi"
-      headerAction={
-        <button
-          className="p-2"
-          style={{ color: 'var(--color-primary)' }}
-          aria-label="Aggiungi impegno"
-        >
-          <Plus size={24} strokeWidth={2} />
-        </button>
-      }
-    >
+    <>
+      <AppShell
+        title="Oggi"
+        headerAction={
+          <button
+            onClick={() => setShowForm(true)}
+            className="p-2"
+            style={{ color: 'var(--color-primary)' }}
+            aria-label="Aggiungi impegno"
+          >
+            <Plus size={24} strokeWidth={2} />
+          </button>
+        }
+      >
       <div className="p-4 space-y-4">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-2">
@@ -70,12 +76,13 @@ export function DayPage() {
         {/* Task Cards */}
         <div className="space-y-2">
           {demoTasks.map(task => (
-            <TaskCard key={task.id} task={task} onClick={() => {}} />
+            <SwipeableTaskCard key={task.id} task={task} onClick={() => {}} />
           ))}
         </div>
 
         {/* Add button */}
         <button
+          onClick={() => setShowForm(true)}
           className="w-full py-3 text-sm font-medium rounded-xl"
           style={{
             color: 'var(--color-primary)',
@@ -85,6 +92,10 @@ export function DayPage() {
           + Aggiungi impegno oggi
         </button>
       </div>
-    </AppShell>
+      </AppShell>
+
+      {/* Task Form Modal */}
+      {showForm && <TaskForm onClose={() => setShowForm(false)} />}
+    </>
   )
 }

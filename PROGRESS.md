@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 1 — Foundation in corso
-**Sprint corrente:** Sprint 1 (Task 1.3)
+**Sprint corrente:** Sprint 1 (Task 1.4)
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -27,7 +27,12 @@
   - ✅ Trigger updated_at attivo
   - ✅ Tipi TypeScript aggiornati (TaskStatus, recurrence)
   - 📋 Schema: 2 tabelle, 2 enum, 5 indici
-- [ ] Task 1.3: Autenticazione Magic Link
+- [x] Task 1.3: Autenticazione Magic Link *(completato 2026-02-12)*
+  - ✅ authStore.ts con Zustand (initialize, signIn, signOut)
+  - ✅ AuthPage.tsx con form email iOS-styled
+  - ✅ Protezione route in App.tsx
+  - ✅ Gestione onAuthStateChange e session persistence
+  - 🔐 Magic link OTP via Supabase Auth
 - [ ] Task 1.4: AppShell + BottomNav + Routing
 - [ ] Task 1.5: Zustand Task Store + Supabase CRUD base
 - [ ] Task 1.6: WeightBadge + TaskCard base
@@ -67,13 +72,13 @@
 ## Avanzamento
 
 ```
-Sprint 1  [██░░░░] 2/6   (33%)
+Sprint 1  [███░░░] 3/6   (50%)
 Sprint 2  [░░░░░░] 0/6   (0%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [██░░░░] 2/24 task  (8%)
+TOTALE    [███░░░] 3/24 task  (13%)
 ```
 
 ---

@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 2 — Core Task in corso
-**Sprint corrente:** Sprint 2 (Task 2.3)
+**Sprint corrente:** Sprint 2 (Task 2.4)
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-2-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -72,7 +72,15 @@
   - ✅ Footer CTA "+ Aggiungi al backlog"
   - ✅ Animazione staggered fade-in lista
   - ✅ Integrato in BacklogPage con fetchTasks
-- [ ] Task 2.3: Filtri e ordinamento backlog
+- [x] Task 2.3: Filtri e ordinamento backlog *(completato 2026-02-12)*
+  - ✅ BacklogFilters.tsx bottom sheet (250 lines)
+  - ✅ 4 opzioni ordinamento: peso ↑↓, scadenza, data aggiunta
+  - ✅ 4 filtri: in scadenza (7gg), senza data, alta priorità (4-5), ricorrenti
+  - ✅ Pulsanti Applica (blu) + Reset (outline)
+  - ✅ Badge rosso su pulsante filtri con contatore attivi
+  - ✅ Logica sort/filter integrata in BacklogPanel con useMemo
+  - ✅ Pulsante sort mostra label dinamica (Peso↓, Peso↑, etc.)
+  - ✅ Filtri salvati in stato locale
 - [ ] Task 2.4: Swipe actions su TaskCard
 - [ ] Task 2.5: TaskDetail bottom sheet
 - [ ] Task 2.6: DayPage — Vista Giorno
@@ -104,12 +112,12 @@
 
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
-Sprint 2  [██░░░░] 2/6   (33%)
+Sprint 2  [███░░░] 3/6   (50%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [████████] 8/24 task  (33%)
+TOTALE    [█████████] 9/24 task  (38%)
 ```
 
 ---

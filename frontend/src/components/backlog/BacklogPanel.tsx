@@ -1,7 +1,13 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { SlidersHorizontal, Calendar, Plus } from 'lucide-react'
 import { useTaskStore } from '@/store/taskStore'
 import { TaskCard } from '@/components/task/TaskCard'
+import {
+  BacklogFilters,
+  countActiveFilters,
+  type BacklogFiltersState,
+  type SortOption,
+} from './BacklogFilters'
 
 interface BacklogPanelProps {
   onAddTask: () => void
@@ -17,17 +23,79 @@ interface BacklogPanelProps {
 export function BacklogPanel({ onAddTask }: BacklogPanelProps) {
   const tasks = useTaskStore(state => state.tasks)
   const loading = useTaskStore(state => state.loading)
-  const [sortBy] = useState<'weight' | 'date'>('weight')
+  const [showFilters, setShowFilters] = useState(false)
+  const [filters, setFilters] = useState<BacklogFiltersState>({
+    sortBy: 'weight-desc',
+    dueSoon: false,
+    noDueDate: false,
+    highPriority: false,
+    recurringOnly: false,
+  })
 
-  // Filter backlog tasks and sort by weight (descending)
-  const backlogTasks = tasks
-    .filter(t => t.status === 'backlog')
-    .sort((a, b) => {
-      if (sortBy === 'weight') {
-        return b.weight - a.weight
+  // Apply filters and sorting
+  const backlogTasks = useMemo(() => {
+    let filtered = tasks.filter(t => t.status === 'backlog')
+
+    // Apply filters
+    if (filters.dueSoon) {
+      const sevenDaysFromNow = new Date()
+      sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
+      filtered = filtered.filter(
+        t => t.due_date && new Date(t.due_date) <= sevenDaysFromNow
+      )
+    }
+
+    if (filters.noDueDate) {
+      filtered = filtered.filter(t => !t.due_date)
+    }
+
+    if (filters.highPriority) {
+      filtered = filtered.filter(t => t.weight >= 4)
+    }
+
+    if (filters.recurringOnly) {
+      filtered = filtered.filter(t => t.is_recurring)
+    }
+
+    // Apply sorting
+    const sorted = [...filtered].sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'weight-desc':
+          return b.weight - a.weight
+        case 'weight-asc':
+          return a.weight - b.weight
+        case 'due-date-asc':
+          if (!a.due_date) return 1
+          if (!b.due_date) return -1
+          return new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
+        case 'created-at-desc':
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          )
+        default:
+          return 0
       }
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
+
+    return sorted
+  }, [tasks, filters])
+
+  const activeFiltersCount = countActiveFilters(filters)
+
+  const getSortLabel = (sortBy: SortOption) => {
+    switch (sortBy) {
+      case 'weight-desc':
+        return 'Peso ↓'
+      case 'weight-asc':
+        return 'Peso ↑'
+      case 'due-date-asc':
+        return 'Scadenza ↑'
+      case 'created-at-desc':
+        return 'Data ↓'
+      default:
+        return 'Peso ↓'
+    }
+  }
 
   if (loading) {
     return (
@@ -82,22 +150,35 @@ export function BacklogPanel({ onAddTask }: BacklogPanelProps) {
         </h2>
         <div className="flex gap-2">
           <button
+            onClick={() => setShowFilters(true)}
             className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors"
             style={{
               backgroundColor: 'var(--color-background-section)',
               color: 'var(--color-text-primary)',
             }}
           >
-            Peso ↓
+            {getSortLabel(filters.sortBy)}
           </button>
           <button
-            className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors"
+            onClick={() => setShowFilters(true)}
+            className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors relative"
             style={{
               backgroundColor: 'var(--color-background-section)',
               color: 'var(--color-text-primary)',
             }}
           >
             <SlidersHorizontal size={16} />
+            {activeFiltersCount > 0 && (
+              <span
+                className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center font-semibold"
+                style={{
+                  backgroundColor: 'var(--color-destructive)',
+                  color: 'white',
+                }}
+              >
+                {activeFiltersCount}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -167,6 +248,15 @@ export function BacklogPanel({ onAddTask }: BacklogPanelProps) {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Filters modal */}
+      {showFilters && (
+        <BacklogFilters
+          currentFilters={filters}
+          onApply={setFilters}
+          onClose={() => setShowFilters(false)}
+        />
       )}
     </div>
   )

@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 2 — Core Task in corso
-**Sprint corrente:** Sprint 2 (Task 2.2)
+**Sprint corrente:** Sprint 2 (Task 2.3)
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-2-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -63,7 +63,15 @@
   - ✅ Date/time pickers nativi
   - ✅ CTA adattivo ("Salva nel Backlog" / "Schedula")
   - ✅ Integrato con taskStore.createTask
-- [ ] Task 2.2: BacklogPanel + lista
+- [x] Task 2.2: BacklogPanel + lista *(completato 2026-02-12)*
+  - ✅ BacklogPanel.tsx con header + contatore dinamico
+  - ✅ Lista task backlog ordinati per peso (desc)
+  - ✅ Empty state: icona + testo + CTA
+  - ✅ Loading skeleton con 3 cards animate
+  - ✅ Pulsanti "Peso ↓" e "Filtri" nell'header
+  - ✅ Footer CTA "+ Aggiungi al backlog"
+  - ✅ Animazione staggered fade-in lista
+  - ✅ Integrato in BacklogPage con fetchTasks
 - [ ] Task 2.3: Filtri e ordinamento backlog
 - [ ] Task 2.4: Swipe actions su TaskCard
 - [ ] Task 2.5: TaskDetail bottom sheet
@@ -96,12 +104,12 @@
 
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
-Sprint 2  [█░░░░░] 1/6   (17%)
+Sprint 2  [██░░░░] 2/6   (33%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [███████] 7/24 task  (29%)
+TOTALE    [████████] 8/24 task  (33%)
 ```
 
 ---

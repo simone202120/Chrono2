@@ -1,39 +1,49 @@
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useAuthStore } from '@/store/authStore'
+import { AuthPage } from '@/pages/AuthPage'
+import { DayPage } from '@/pages/DayPage'
+import { WeekPage } from '@/pages/WeekPage'
+import { BacklogPage } from '@/pages/BacklogPage'
+
 function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center space-y-6 px-6">
-        <h1 className="text-4xl font-semibold">📋 Agile Planner</h1>
-        <p className="text-lg" style={{ color: 'var(--color-text-secondary)' }}>
-          PWA mobile personale per la gestione degli impegni in stile agile
-        </p>
-        <div className="flex gap-4 justify-center mt-8">
-          <div
-            className="px-4 py-2 text-white font-medium"
-            style={{
-              backgroundColor: 'var(--color-weight-1)',
-              borderRadius: '20px',
-            }}
-          >
-            Sprint 1
-          </div>
-          <div
-            className="px-4 py-2 text-white font-medium"
-            style={{
-              backgroundColor: 'var(--color-primary)',
-              borderRadius: '20px',
-            }}
-          >
-            Task 1.1 ✓
-          </div>
-        </div>
-        <p
-          className="text-sm mt-8"
-          style={{ color: 'var(--color-text-placeholder)' }}
+  const { user, loading, initialized, initialize } = useAuthStore()
+
+  useEffect(() => {
+    if (!initialized) {
+      initialize()
+    }
+  }, [initialized, initialize])
+
+  // Loading state
+  if (loading || !initialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div
+          className="text-lg"
+          style={{ color: 'var(--color-text-secondary)' }}
         >
-          Setup completo • React 18 + Vite + TypeScript + Tailwind + PWA
-        </p>
+          Caricamento...
+        </div>
       </div>
-    </div>
+    )
+  }
+
+  // Not authenticated - show login
+  if (!user) {
+    return <AuthPage />
+  }
+
+  // Authenticated - show main app with routing
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<DayPage />} />
+        <Route path="/settimana" element={<WeekPage />} />
+        <Route path="/backlog" element={<BacklogPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

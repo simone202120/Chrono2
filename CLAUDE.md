@@ -19,6 +19,39 @@ Prima di scrivere una riga di codice, leggi `PROGRESS.md` per sapere:
 Lavora SOLO sul task specificato nel prompt. Non anticipare task futuri.
 Se noti qualcosa da migliorare in un'area diversa, annotalo ma non intervenire.
 
+## Regola #3: Qualità del Codice e Architettura
+
+**MASSIMA ATTENZIONE ALLA QUALITÀ** — Il codice deve essere:
+- ✅ **Sintatticamente corretto**: zero errori TypeScript, zero warning ESLint
+- ✅ **Logicamente corretto**: funziona come previsto, gestisce edge cases
+- ✅ **Professionale**: leggibile, manutenibile, ben strutturato
+- ✅ **Type-safe**: tipi espliciti, no `any`, no casting non sicuri
+
+### Rispetto dell'architettura
+
+L'architettura è **RIGIDA** e deve essere rispettata:
+- Store Zustand è l'unica fonte di verità (SSOT)
+- Tutte le query Supabase passano da `taskStore.ts`
+- Componenti sono puri e non hanno logica di business
+- Hook custom per logica riutilizzabile, non nei componenti
+- Nessuna dipendenza circolare tra moduli
+
+### Gestione file
+
+**NON creare nuovi file senza necessità assoluta.** Prima di creare un file:
+1. Verifica se esiste già un file adatto per quella logica
+2. Se serve davvero, **CHIEDI AUTORIZZAZIONE ALL'UTENTE** prima di crearlo
+3. Posiziona il file nella **cartella corretta** secondo la struttura (vedi sotto)
+4. NON creare file in giro o in posizioni casuali
+
+### Comprensione delle librerie
+
+Prima di usare una libreria:
+- Usa **Context7** o documentazione ufficiale per capire bene l'API
+- Non improvvisare: leggi esempi e best practices
+- Verifica compatibilità con React 18, TypeScript strict, mobile
+- Preferisci API moderne e raccomandate dalla libreria
+
 ## Struttura progetto
 
 ```

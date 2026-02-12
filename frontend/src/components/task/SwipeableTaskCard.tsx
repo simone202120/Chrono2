@@ -1,0 +1,137 @@
+import { useState, useRef } from 'react'
+import { Trash2, CheckCircle2 } from 'lucide-react'
+import { TaskCard } from './TaskCard'
+import { useTaskStore } from '@/store/taskStore'
+import type { Task } from '@/types/task'
+
+interface SwipeableTaskCardProps {
+  task: Task
+  onClick?: () => void
+}
+
+const SWIPE_THRESHOLD = 80
+
+/**
+ * SwipeableTaskCard - TaskCard with swipe gestures
+ * - Swipe left → delete (red background)
+ * - Swipe right → complete (green background)
+ * - Threshold: 80px
+ * - Confirm dialog for delete
+ */
+export function SwipeableTaskCard({ task, onClick }: SwipeableTaskCardProps) {
+  const deleteTask = useTaskStore(state => state.deleteTask)
+  const completeTask = useTaskStore(state => state.completeTask)
+
+  const [translateX, setTranslateX] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const startXRef = useRef(0)
+  const currentXRef = useRef(0)
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setIsDragging(true)
+    startXRef.current = e.clientX
+    currentXRef.current = e.clientX
+  }
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return
+
+    currentXRef.current = e.clientX
+    const deltaX = currentXRef.current - startXRef.current
+
+    // Limit swipe to -150 (left) and +150 (right)
+    const clampedDelta = Math.max(-150, Math.min(150, deltaX))
+    setTranslateX(clampedDelta)
+  }
+
+  const handlePointerUp = async () => {
+    if (!isDragging) return
+    setIsDragging(false)
+
+    const deltaX = currentXRef.current - startXRef.current
+
+    // Swipe left (delete)
+    if (deltaX < -SWIPE_THRESHOLD) {
+      const confirmDelete = window.confirm(
+        `Eliminare l'impegno "${task.title}"?`
+      )
+      if (confirmDelete) {
+        // Animate out
+        setTranslateX(-400)
+        setTimeout(() => {
+          deleteTask(task.id)
+        }, 200)
+      } else {
+        // Spring back
+        setTranslateX(0)
+      }
+    }
+    // Swipe right (complete)
+    else if (deltaX > SWIPE_THRESHOLD) {
+      // Complete task
+      await completeTask(task.id)
+      setTranslateX(0)
+    }
+    // Not enough swipe
+    else {
+      setTranslateX(0)
+    }
+  }
+
+  const handlePointerCancel = () => {
+    setIsDragging(false)
+    setTranslateX(0)
+  }
+
+  // Don't allow swipe on already completed tasks
+  if (task.status === 'done') {
+    return <TaskCard task={task} onClick={onClick} />
+  }
+
+  return (
+    <div className="relative overflow-hidden rounded-xl">
+      {/* Background actions */}
+      <div className="absolute inset-0 flex items-center justify-between px-6">
+        {/* Left action (delete - visible when swiping left) */}
+        <div
+          className="flex items-center gap-2"
+          style={{
+            opacity: translateX < 0 ? Math.abs(translateX) / SWIPE_THRESHOLD : 0,
+            transform: `translateX(${Math.min(0, translateX + 20)}px)`,
+            transition: isDragging ? 'none' : 'all 0.2s ease-out',
+          }}
+        >
+          <Trash2 size={24} style={{ color: 'var(--color-destructive)' }} />
+        </div>
+
+        {/* Right action (complete - visible when swiping right) */}
+        <div
+          className="flex items-center gap-2"
+          style={{
+            opacity: translateX > 0 ? translateX / SWIPE_THRESHOLD : 0,
+            transform: `translateX(${Math.max(0, translateX - 20)}px)`,
+            transition: isDragging ? 'none' : 'all 0.2s ease-out',
+          }}
+        >
+          <CheckCircle2 size={24} style={{ color: 'var(--color-success)' }} />
+        </div>
+      </div>
+
+      {/* Card overlay */}
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        style={{
+          transform: `translateX(${translateX}px)`,
+          transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          touchAction: 'pan-y', // Allow vertical scroll
+          cursor: isDragging ? 'grabbing' : 'grab',
+        }}
+      >
+        <TaskCard task={task} onClick={onClick} />
+      </div>
+    </div>
+  )
+}

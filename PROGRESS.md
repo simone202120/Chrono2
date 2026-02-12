@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 2 — Core Task in corso
-**Sprint corrente:** Sprint 2 (Task 2.4)
+**Sprint corrente:** Sprint 2 (Task 2.5)
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-2-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -81,7 +81,16 @@
   - ✅ Logica sort/filter integrata in BacklogPanel con useMemo
   - ✅ Pulsante sort mostra label dinamica (Peso↓, Peso↑, etc.)
   - ✅ Filtri salvati in stato locale
-- [ ] Task 2.4: Swipe actions su TaskCard
+- [x] Task 2.4: Swipe actions su TaskCard *(completato 2026-02-12)*
+  - ✅ SwipeableTaskCard.tsx wrappa TaskCard con gesture
+  - ✅ Swipe sinistra → elimina (icona Trash2 rossa)
+  - ✅ Swipe destra → completa (icona CheckCircle2 verde)
+  - ✅ Threshold 80px per attivazione azione
+  - ✅ Conferma elimina con window.confirm
+  - ✅ Animazione smooth con spring back se sotto threshold
+  - ✅ completeTask aggiunto a taskStore
+  - ✅ Integrato in BacklogPanel e DayPage
+  - ✅ Disabled on completed tasks
 - [ ] Task 2.5: TaskDetail bottom sheet
 - [ ] Task 2.6: DayPage — Vista Giorno
 
@@ -112,12 +121,12 @@
 
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
-Sprint 2  [███░░░] 3/6   (50%)
+Sprint 2  [████░░] 4/6   (67%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [█████████] 9/24 task  (38%)
+TOTALE    [██████████] 10/24 task  (42%)
 ```
 
 ---

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { SlidersHorizontal, Calendar, Plus } from 'lucide-react'
 import { useTaskStore } from '@/store/taskStore'
-import { TaskCard } from '@/components/task/TaskCard'
+import { SwipeableTaskCard } from '@/components/task/SwipeableTaskCard'
 import {
   BacklogFilters,
   countActiveFilters,
@@ -228,7 +228,7 @@ export function BacklogPanel({ onAddTask }: BacklogPanelProps) {
                   animationFillMode: 'both',
                 }}
               >
-                <TaskCard task={task} />
+                <SwipeableTaskCard task={task} />
               </div>
             ))}
           </div>

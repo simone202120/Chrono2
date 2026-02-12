@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AppShell } from '@/components/layout/AppShell'
-import { TaskCard } from '@/components/task/TaskCard'
+import { SwipeableTaskCard } from '@/components/task/SwipeableTaskCard'
 import { TaskForm } from '@/components/task/TaskForm'
 import { Plus } from 'lucide-react'
 import type { Task } from '@/types/task'
@@ -76,7 +76,7 @@ export function DayPage() {
         {/* Task Cards */}
         <div className="space-y-2">
           {demoTasks.map(task => (
-            <TaskCard key={task.id} task={task} onClick={() => {}} />
+            <SwipeableTaskCard key={task.id} task={task} onClick={() => {}} />
           ))}
         </div>
 

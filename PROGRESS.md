@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 1 — Foundation in corso
-**Sprint corrente:** Sprint 1 (Task 1.5)
+**Sprint corrente:** Sprint 1 (Task 1.6 - ULTIMO!)
 **Ultimo aggiornamento:** 2026-02-12
 **Branch:** `claude/sprint-1-01JatdRkfc3Pd9Mr5GoRL9t2`
 
@@ -39,7 +39,12 @@
   - ✅ React Router v6 configurato
   - ✅ Pagine stub: DayPage, WeekPage, BacklogPage
   - 🎨 Icone lucide-react (Calendar, CalendarDays, List)
-- [ ] Task 1.5: Zustand Task Store + Supabase CRUD base
+- [x] Task 1.5: Zustand Task Store + Supabase CRUD base *(completato 2026-02-12)*
+  - ✅ taskStore.ts con Zustand (SSOT per tasks)
+  - ✅ CRUD completo: fetchTasks, createTask, updateTask, deleteTask
+  - ✅ Optimistic updates con rollback automatico
+  - ✅ Error handling con user feedback
+  - 📊 Tutte le query Supabase passano dal store
 - [ ] Task 1.6: WeightBadge + TaskCard base
 
 ## Sprint 2 — Core Task
@@ -77,13 +82,13 @@
 ## Avanzamento
 
 ```
-Sprint 1  [████░░] 4/6   (67%)
+Sprint 1  [█████░] 5/6   (83%)
 Sprint 2  [░░░░░░] 0/6   (0%)
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [████░░] 4/24 task  (17%)
+TOTALE    [█████░] 5/24 task  (21%)
 ```
 
 ---

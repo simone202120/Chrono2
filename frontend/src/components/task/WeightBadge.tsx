@@ -36,7 +36,7 @@ export function WeightBadge({ weight, size = 'md' }: WeightBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-medium text-white ${sizeClasses[size]}`}
+      className={`inline-flex items-center gap-1 rounded-full font-medium text-white transition-transform duration-200 hover:scale-110 ${sizeClasses[size]}`}
       style={{
         backgroundColor: WEIGHT_COLORS[weight],
       }}

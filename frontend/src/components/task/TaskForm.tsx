@@ -95,13 +95,16 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end"
+      className="fixed inset-0 z-50 flex items-end animate-in fade-in duration-200"
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       onClick={onClose}
     >
       <form
-        className="w-full rounded-t-3xl p-6 max-h-[90vh] overflow-y-auto"
-        style={{ backgroundColor: 'var(--color-background-card)' }}
+        className="w-full rounded-t-3xl p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300"
+        style={{
+          backgroundColor: 'var(--color-background-card)',
+          animationTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)'
+        }}
         onClick={e => e.stopPropagation()}
         onSubmit={handleSubmit}
       >

@@ -158,7 +158,7 @@ export function DayPage() {
           style={{ touchAction: 'pan-y' }}
         >
           {/* Agenda Section */}
-          <div className="p-4">
+          <div key={selectedDateISO} className="p-4 animate-slide-horizontal">
             {/* Section Header */}
             <div className="flex items-center justify-between mb-3">
               <h2
@@ -169,7 +169,7 @@ export function DayPage() {
               </h2>
               {dayTasks.length > 0 && (
                 <span
-                  className="text-xs font-medium px-2 py-1 rounded-full"
+                  className="text-xs font-medium px-2 py-1 rounded-full smooth-color-transition"
                   style={{
                     color: 'white',
                     backgroundColor: weightColor,

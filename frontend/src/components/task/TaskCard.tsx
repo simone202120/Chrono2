@@ -27,7 +27,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
     <button
       onClick={onClick}
       className={cn(
-        'w-full p-4 rounded-xl text-left transition-all active:scale-[0.97]',
+        'w-full p-4 rounded-xl text-left transition-all duration-200 active:scale-[0.97] active:duration-[120ms]',
         isCompleted && 'opacity-50'
       )}
       style={{

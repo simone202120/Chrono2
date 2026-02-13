@@ -73,7 +73,42 @@
     }
   }
 
+  @keyframes slide-left {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-horizontal {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
   .animate-fade-in {
     animation: fade-in 0.3s ease-out;
+  }
+
+  .animate-slide-left {
+    animation: slide-left 0.2s ease-in forwards;
+  }
+
+  .animate-slide-horizontal {
+    animation: slide-horizontal 0.25s ease-in-out;
+  }
+
+  /* Smooth color transitions for weight badges */
+  .smooth-color-transition {
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   }
 }

@@ -4,8 +4,8 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 2 — Core Task COMPLETATO ✅
-**Sprint corrente:** Sprint 2 completato!
+**Fase:** Sprint 3 — Calendario in corso
+**Sprint corrente:** Sprint 3 (Task 3.1)
 **Ultimo aggiornamento:** 2026-02-13
 **Branch:** `claude/complete-sprint-2-UppqZ`
 

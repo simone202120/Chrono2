@@ -4,10 +4,10 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 4 — Avanzato COMPLETATO ✅
-**Sprint corrente:** Sprint 4 (COMPLETO)
+**Fase:** PROGETTO COMPLETATO ✅
+**Sprint corrente:** Tutti gli sprint completati! 🎉
 **Ultimo aggiornamento:** 2026-02-13
-**Branch:** `claude/sprint-4-WEMku`
+**Branch:** `feature/sprint-5`
 
 ---
 
@@ -194,10 +194,33 @@
 
 ## Sprint 5 — Rifinitura
 
-- [ ] Task 5.1: Animazioni e micro-interazioni
-- [ ] Task 5.2: Gestione errori e feedback utente
-- [ ] Task 5.3: Settings e preferenze utente
-- [ ] Task 5.4: Deploy + documentazione finale
+- [x] Task 5.1: Animazioni e micro-interazioni *(completato 2026-02-13)*
+  - ✅ TaskCard: tap scale animation (0.97, 120ms)
+  - ✅ WeightBadge: hover scale-up (1.1)
+  - ✅ Bottom sheets: slide-up with spring curve
+  - ✅ Backlog list: staggered fade-in (50ms delay)
+  - ✅ DayPage: slide animation on date navigation
+  - ✅ Weight badge: smooth color transitions
+  - ✅ CSS keyframes: fade-in, slide-left, slide-horizontal, shake
+- [x] Task 5.2: Gestione errori e feedback utente *(completato 2026-02-13)*
+  - ✅ Toast system (Sonner): success, error with retry
+  - ✅ Form validation: title required with shake animation
+  - ✅ Warnings for past dates/times
+  - ✅ Improved empty states with contextual messages
+  - ✅ Toast feedback on all CRUD operations
+- [x] Task 5.3: Settings e preferenze utente *(completato 2026-02-13)*
+  - ✅ SettingsPage with iOS-style layout
+  - ✅ Account: email display, sign out
+  - ✅ Notifications: push toggle
+  - ✅ Preferences: default view, first day of week
+  - ✅ Data export: JSON and CSV download
+  - ✅ Bottom nav extended to 4 tabs
+- [x] Task 5.4: Deploy + documentazione finale *(completato 2026-02-13)*
+  - ✅ vercel.json: SPA rewrites, security headers
+  - ✅ .env.production template
+  - ✅ DEPLOY_GUIDE.md: complete deployment guide
+  - ✅ README.md updated with deploy guide link
+  - 📚 PWA ready for production
 
 ---
 
@@ -205,18 +228,12 @@
 
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
-Sprint 2  [████░░] 4/6   (67%)
-Sprint 3  [░░░░░░] 0/4   (0%)
-Sprint 4  [██████] 4/4   (100%) ✅
-Sprint 5  [░░░░░░] 0/4   (0%)
-
-TOTALE    [██████████████] 14/24 task  (58%)
 Sprint 2  [██████] 6/6   (100%) ✅
 Sprint 3  [██████] 4/4   (100%) ✅
-Sprint 4  [░░░░░░] 0/4   (0%)
-Sprint 5  [░░░░░░] 0/4   (0%)
+Sprint 4  [██████] 4/4   (100%) ✅
+Sprint 5  [██████] 4/4   (100%) ✅
 
-TOTALE    [████████████████] 16/24 task  (67%)
+TOTALE    [████████████████████████] 24/24 task  (100%) 🎉
 ```
 
 ---

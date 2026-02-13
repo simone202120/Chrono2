@@ -62,3 +62,4 @@ agile-planner/
 - [Conventions](CONVENTIONS.md) — convenzioni codice e naming
 - [Progress](PROGRESS.md) — stato avanzamento
 - [Claude.md](CLAUDE.md) — istruzioni per Claude Code
+- [Deploy Guide](DEPLOY_GUIDE.md) — guida deployment Vercel + Supabase

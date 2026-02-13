@@ -4,10 +4,10 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 2 — Core Task in corso
-**Sprint corrente:** Sprint 2 (Task 2.5)
-**Ultimo aggiornamento:** 2026-02-12
-**Branch:** `claude/sprint-2-01JatdRkfc3Pd9Mr5GoRL9t2`
+**Fase:** Sprint 4 — Avanzato COMPLETATO ✅
+**Sprint corrente:** Sprint 4 (COMPLETO)
+**Ultimo aggiornamento:** 2026-02-13
+**Branch:** `claude/sprint-4-WEMku`
 
 ---
 
@@ -103,10 +103,48 @@
 
 ## Sprint 4 — Avanzato
 
-- [ ] Task 4.1: Task ricorrenti — creazione e gestione
-- [ ] Task 4.2: Web Push — setup e subscription
-- [ ] Task 4.3: Supabase Edge Function — cron notifiche
-- [ ] Task 4.4: PWA — installabilità e offline
+- [x] Task 4.1: Task ricorrenti — creazione e gestione *(completato 2026-02-13)*
+  - ✅ recurrence.ts: generazione istanze future (max 90 giorni)
+  - ✅ TaskForm esteso con campi ricorrenza:
+    - Toggle giorni settimana (weekly)
+    - Input intervallo personalizzato (custom)
+    - Date picker "Termina il" (until)
+  - ✅ completeRecurringInstance in taskStore:
+    - Completa solo questa istanza (crea eccezione)
+    - Completa questa e successive (aggiorna until)
+  - 🔄 Icona RefreshCw già presente in TaskCard
+- [x] Task 4.2: Web Push — setup e subscription *(completato 2026-02-13)*
+  - ✅ generate-vapid.js script per VAPID keys
+  - ✅ useNotifications hook:
+    - Request permission
+    - Subscribe/unsubscribe push
+    - Save subscription to Supabase
+  - ✅ Custom service worker (sw.ts):
+    - Push event handler
+    - Notification click handler
+  - ✅ NotificationBanner component (iOS-style)
+  - ✅ Switch to injectManifest strategy
+  - 📦 Build: 495 KB gzipped (includes workbox)
+- [x] Task 4.3: Supabase Edge Function — cron notifiche *(completato 2026-02-13)*
+  - ✅ notify-due-tasks Edge Function (Deno):
+    - Query tasks due today/tomorrow
+    - Group by user
+    - Send Web Push to each subscription
+    - Auto-remove expired subscriptions
+  - ✅ config.toml: cron schedule "0 * * * *" (ogni ora)
+  - ✅ README completo con setup instructions
+  - 🔔 Richiede VAPID secrets in Supabase dashboard
+- [x] Task 4.4: PWA — installabilità e offline *(completato 2026-02-13)*
+  - ✅ useOnlineStatus hook (network detection)
+  - ✅ useInstallPrompt hook:
+    - Capture beforeinstallprompt
+    - Show after 3 days usage
+    - Detect if installed
+  - ✅ OfflineBanner component (warning quando offline)
+  - ✅ InstallPrompt component (iOS-style)
+  - ✅ Manifest enhanced: orientation, categories, scope
+  - ✅ iOS meta tags: apple-mobile-web-app-*, splash screens
+  - 📱 PWA completamente installabile
 
 ## Sprint 5 — Rifinitura
 
@@ -123,10 +161,10 @@
 Sprint 1  [██████] 6/6   (100%) ✅
 Sprint 2  [████░░] 4/6   (67%)
 Sprint 3  [░░░░░░] 0/4   (0%)
-Sprint 4  [░░░░░░] 0/4   (0%)
+Sprint 4  [██████] 4/4   (100%) ✅
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [██████████] 10/24 task  (42%)
+TOTALE    [██████████████] 14/24 task  (58%)
 ```
 
 ---
@@ -141,6 +179,9 @@ TOTALE    [██████████] 10/24 task  (42%)
 | 2025-02-12 | Zustand invece di Redux | Meno boilerplate per progetto personale |
 | 2026-02-12 | Tailwind CSS v4 con CSS variables | Compatibilità con nuova versione, no extend colors |
 | 2026-02-12 | Branch `claude/sprint-1-*` | Sistema GitHub richiede prefisso claude/ + session ID |
+| 2026-02-13 | Sprint 4 prima di Sprint 2/3 | Funzionalità indipendenti, branch dal main aggiornato |
+| 2026-02-13 | injectManifest strategy per PWA | Custom SW necessario per Web Push notifications |
+| 2026-02-13 | web-push in Edge Function | Compatibile Deno, auto-remove expired subscriptions |
 
 ---
 

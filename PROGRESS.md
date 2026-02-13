@@ -4,10 +4,10 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 2 — Core Task in corso
-**Sprint corrente:** Sprint 2 (Task 2.5)
-**Ultimo aggiornamento:** 2026-02-12
-**Branch:** `claude/sprint-2-01JatdRkfc3Pd9Mr5GoRL9t2`
+**Fase:** Sprint 2 — Core Task COMPLETATO ✅
+**Sprint corrente:** Sprint 2 completato!
+**Ultimo aggiornamento:** 2026-02-13
+**Branch:** `claude/complete-sprint-2-UppqZ`
 
 ---
 
@@ -91,8 +91,25 @@
   - ✅ completeTask aggiunto a taskStore
   - ✅ Integrato in BacklogPanel e DayPage
   - ✅ Disabled on completed tasks
-- [ ] Task 2.5: TaskDetail bottom sheet
-- [ ] Task 2.6: DayPage — Vista Giorno
+- [x] Task 2.5: TaskDetail bottom sheet *(completato 2026-02-13)*
+  - ✅ TaskDetail.tsx con visualizzazione completa informazioni task
+  - ✅ Pulsanti azione: Completa, Sposta in backlog, Rinvia, Elimina
+  - ✅ Rinvia con date/time picker inline
+  - ✅ Integrato con SwipeableTaskCard: tap apre detail, swipe azioni
+  - ✅ Rilevamento tap (10px) vs swipe (80px)
+  - ✅ Funzioni store aggiunte: moveToBacklog, postponeTask, scheduleTask
+  - ✅ WeightBadge esteso con size 'lg' per detail view
+- [x] Task 2.6: DayPage — Vista Giorno *(completato 2026-02-13)*
+  - ✅ useCalendar hook per navigazione date e formattazione
+  - ✅ AppShell esteso con headerLeftAction e title ReactNode
+  - ✅ Header con navigazione ◀▶ tra giorni
+  - ✅ Data centrata (blu se oggi, nero altrimenti)
+  - ✅ Sezione Agenda con task filtrati per data
+  - ✅ Badge peso totale colorato (verde<5, giallo<10, rosso≥10)
+  - ✅ Empty state con icona e CTA
+  - ✅ BacklogPanel sotto l'agenda
+  - ✅ Swipe orizzontale per cambiare giorno (threshold 50px)
+  - ✅ Integrazione completa con taskStore
 
 ## Sprint 3 — Calendario
 
@@ -121,12 +138,12 @@
 
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
-Sprint 2  [████░░] 4/6   (67%)
+Sprint 2  [██████] 6/6   (100%) ✅
 Sprint 3  [░░░░░░] 0/4   (0%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [██████████] 10/24 task  (42%)
+TOTALE    [████████████] 12/24 task  (50%)
 ```
 
 ---

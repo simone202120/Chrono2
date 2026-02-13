@@ -4,8 +4,8 @@
 
 ## Stato Attuale
 
-**Fase:** Sprint 3 — Calendario in corso
-**Sprint corrente:** Sprint 3 (Task 3.2)
+**Fase:** Sprint 3 — Calendario COMPLETATO ✅
+**Sprint corrente:** Sprint 3 completato!
 **Ultimo aggiornamento:** 2026-02-13
 **Branch:** `claude/complete-sprint-2-UppqZ`
 
@@ -122,9 +122,30 @@
   - ✅ WeekView component con griglia 7 colonne
   - ✅ WeekPage completa con header navigazione e BacklogPanel
   - ✅ Tap su giorno naviga a DayPage con data selezionata
-- [ ] Task 3.2: Drag & Drop — backlog verso calendario
-- [ ] Task 3.3: BacklogPage full screen
-- [ ] Task 3.4: Riepilogo navigazione + link tra viste
+- [x] Task 3.2: Drag & Drop — backlog verso calendario *(completato 2026-02-13)*
+  - ✅ @dnd-kit installato e configurato
+  - ✅ AppShell con DndContext (touch + mouse sensors)
+  - ✅ DragOverlay con ghost preview
+  - ✅ BacklogItem draggable (long press 150ms)
+  - ✅ DayColumn droppable con highlight blu
+  - ✅ TaskForm esteso per schedulare task esistenti
+  - ✅ Drop apre TaskForm pre-compilato con data
+  - ✅ Haptic feedback su drop
+- [x] Task 3.3: BacklogPage full screen *(completato 2026-02-13)*
+  - ✅ Search bar iOS-style per filtrare per titolo/descrizione
+  - ✅ Sezione "In scadenza" con task entro 7 giorni
+  - ✅ Badge giorni rimanenti su ogni card
+  - ✅ Filtri completi (peso, scadenza, ricorrenti)
+  - ✅ FAB con scroll detection (hide/show)
+  - ✅ Header con contatore totale e badge filtri attivi
+  - ✅ Sort badge visibile
+- [x] Task 3.4: Riepilogo navigazione + link tra viste *(completato 2026-02-13)*
+  - ✅ Pulsante "Oggi" in DayPage quando selectedDate != oggi
+  - ✅ BottomNav "Oggi" chiama goToToday()
+  - ✅ Navigazione coerente tra viste
+  - ✅ selectedDate condiviso via useCalendar hook
+  - ✅ Header DayPage aggiornato con data corretta
+  - ✅ Tap su giorno in WeekView → DayPage con quella data
 
 ## Sprint 4 — Avanzato
 
@@ -147,11 +168,11 @@
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
 Sprint 2  [██████] 6/6   (100%) ✅
-Sprint 3  [█░░░░░] 1/4   (25%)
+Sprint 3  [██████] 4/4   (100%) ✅
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [█████████████] 13/24 task  (54%)
+TOTALE    [████████████████] 16/24 task  (67%)
 ```
 
 ---

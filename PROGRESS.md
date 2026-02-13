@@ -5,7 +5,7 @@
 ## Stato Attuale
 
 **Fase:** Sprint 3 — Calendario in corso
-**Sprint corrente:** Sprint 3 (Task 3.1)
+**Sprint corrente:** Sprint 3 (Task 3.2)
 **Ultimo aggiornamento:** 2026-02-13
 **Branch:** `claude/complete-sprint-2-UppqZ`
 
@@ -113,7 +113,15 @@
 
 ## Sprint 3 — Calendario
 
-- [ ] Task 3.1: WeekView — griglia settimana
+- [x] Task 3.1: WeekView — griglia settimana *(completato 2026-02-13)*
+  - ✅ useCalendar esteso con navigazione settimana (weekOffset, goToNextWeek, goToPreviousWeek)
+  - ✅ weekDates array con 7 giorni (Lun-Dom)
+  - ✅ weekRangeLabel per header (es: "10-16 Febbraio 2025")
+  - ✅ DayColumn component con day name, date, task dots (max 3 + "+N")
+  - ✅ Oggi evidenziato con cerchio blu
+  - ✅ WeekView component con griglia 7 colonne
+  - ✅ WeekPage completa con header navigazione e BacklogPanel
+  - ✅ Tap su giorno naviga a DayPage con data selezionata
 - [ ] Task 3.2: Drag & Drop — backlog verso calendario
 - [ ] Task 3.3: BacklogPage full screen
 - [ ] Task 3.4: Riepilogo navigazione + link tra viste
@@ -139,11 +147,11 @@
 ```
 Sprint 1  [██████] 6/6   (100%) ✅
 Sprint 2  [██████] 6/6   (100%) ✅
-Sprint 3  [░░░░░░] 0/4   (0%)
+Sprint 3  [█░░░░░] 1/4   (25%)
 Sprint 4  [░░░░░░] 0/4   (0%)
 Sprint 5  [░░░░░░] 0/4   (0%)
 
-TOTALE    [████████████] 12/24 task  (50%)
+TOTALE    [█████████████] 13/24 task  (54%)
 ```
 
 ---

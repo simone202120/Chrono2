@@ -22,7 +22,6 @@ interface TaskFormProps {
 export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFormProps) {
   const user = useAuthStore(state => state.user)
   const createTask = useTaskStore(state => state.createTask)
-  const scheduleTask = useTaskStore(state => state.scheduleTask)
 
   // Form state - pre-fill if editing existing task
   const [title, setTitle] = useState(existingTask?.title || '')
@@ -41,6 +40,9 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
   const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>(
     existingTask?.is_recurring ? 'weekly' : 'none'
   )
+  const [recurrenceInterval, setRecurrenceInterval] = useState(1)
+  const [recurrenceWeekDays, setRecurrenceWeekDays] = useState<number[]>([])
+  const [recurrenceUntil, setRecurrenceUntil] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
@@ -310,7 +312,6 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
               <option value="daily">Ogni giorno</option>
               <option value="weekly">Ogni settimana</option>
               <option value="monthly">Ogni mese</option>
-              <option value="custom">Personalizzata</option>
             </select>
 
             {/* Weekly: Days selection */}
@@ -356,27 +357,6 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Custom: Interval input */}
-            {recurrence === 'custom' && (
-              <div className="mt-3">
-                <label className="block text-xs mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                  Ogni quanti giorni?
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="365"
-                  value={recurrenceInterval}
-                  onChange={e => setRecurrenceInterval(Number(e.target.value))}
-                  className="w-full px-4 py-2 rounded-xl border text-sm"
-                  style={{
-                    backgroundColor: 'var(--color-background-card)',
-                    borderColor: 'var(--color-separator)',
-                  }}
-                />
               </div>
             )}
 

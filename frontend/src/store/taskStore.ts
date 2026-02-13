@@ -207,6 +207,130 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     }
   },
 
+  moveToBacklog: async (id: string) => {
+    const originalTask = get().tasks.find(t => t.id === id)
+    if (!originalTask) {
+      return { error: new Error('Task non trovato') }
+    }
+
+    const backlogTask = {
+      ...originalTask,
+      status: 'backlog' as const,
+      scheduled_at: null,
+    }
+
+    // Optimistic update
+    set(state => ({
+      tasks: state.tasks.map(t => (t.id === id ? backlogTask : t)),
+    }))
+
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .update({
+          status: 'backlog',
+          scheduled_at: null,
+        })
+        .eq('id', id)
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error moving task to backlog:', error)
+
+      // Rollback
+      set(state => ({
+        tasks: state.tasks.map(t => (t.id === id ? originalTask : t)),
+        error: 'Errore nello spostamento nel backlog',
+      }))
+
+      return { error: error as Error }
+    }
+  },
+
+  postponeTask: async (id: string, newDate: string) => {
+    const originalTask = get().tasks.find(t => t.id === id)
+    if (!originalTask) {
+      return { error: new Error('Task non trovato') }
+    }
+
+    const postponedTask = {
+      ...originalTask,
+      scheduled_at: newDate,
+    }
+
+    // Optimistic update
+    set(state => ({
+      tasks: state.tasks.map(t => (t.id === id ? postponedTask : t)),
+    }))
+
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .update({
+          scheduled_at: newDate,
+        })
+        .eq('id', id)
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error postponing task:', error)
+
+      // Rollback
+      set(state => ({
+        tasks: state.tasks.map(t => (t.id === id ? originalTask : t)),
+        error: 'Errore nel rinvio del task',
+      }))
+
+      return { error: error as Error }
+    }
+  },
+
+  scheduleTask: async (id: string, scheduledAt: string) => {
+    const originalTask = get().tasks.find(t => t.id === id)
+    if (!originalTask) {
+      return { error: new Error('Task non trovato') }
+    }
+
+    const scheduledTask = {
+      ...originalTask,
+      status: 'scheduled' as const,
+      scheduled_at: scheduledAt,
+    }
+
+    // Optimistic update
+    set(state => ({
+      tasks: state.tasks.map(t => (t.id === id ? scheduledTask : t)),
+    }))
+
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .update({
+          status: 'scheduled',
+          scheduled_at: scheduledAt,
+        })
+        .eq('id', id)
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error scheduling task:', error)
+
+      // Rollback
+      set(state => ({
+        tasks: state.tasks.map(t => (t.id === id ? originalTask : t)),
+        error: 'Errore nella schedulazione del task',
+      }))
+
+      return { error: error as Error }
+    }
+  },
+
   completeRecurringInstance: async (
     parentId: string,
     instanceDate: string,

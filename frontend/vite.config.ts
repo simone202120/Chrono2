@@ -10,6 +10,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       manifest: {
         name: 'Agile Planner',
         short_name: 'Agile Planner',
@@ -17,7 +20,10 @@ export default defineConfig({
         theme_color: '#007AFF',
         background_color: '#F2F2F7',
         display: 'standalone',
+        orientation: 'portrait',
         start_url: '/',
+        scope: '/',
+        categories: ['productivity', 'lifestyle'],
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -37,9 +43,12 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
-        cleanupOutdatedCaches: true,
-        skipWaiting: true,
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
       },
     }),
   ],

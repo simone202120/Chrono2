@@ -1,0 +1,9 @@
+# Cron configuration for notify-due-tasks Edge Function
+# Runs every hour to check for tasks due today or tomorrow
+
+# Cron expression: "minute hour day month weekday"
+# 0 * * * * = Every hour at minute 0
+schedule = "0 * * * *"
+
+# Optional: Set timeout (default 60 seconds)
+timeout = 120

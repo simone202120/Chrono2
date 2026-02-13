@@ -207,129 +207,112 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     }
   },
 
-  moveToBacklog: async (id: string) => {
-    const originalTask = get().tasks.find(t => t.id === id)
-    if (!originalTask) {
-      return { error: new Error('Task non trovato') }
+  completeRecurringInstance: async (
+    parentId: string,
+    instanceDate: string,
+    completeFuture: boolean
+  ) => {
+    const parentTask = get().tasks.find(t => t.id === parentId)
+    if (!parentTask) {
+      return { error: new Error('Task ricorrente non trovato') }
     }
 
-    const backlogTask = {
-      ...originalTask,
-      status: 'backlog' as const,
-      scheduled_at: null,
-    }
+    if (completeFuture) {
+      // Complete all future instances by updating 'until' date
+      const yesterday = new Date(instanceDate)
+      yesterday.setDate(yesterday.getDate() - 1)
+      const untilDate = yesterday.toISOString().split('T')[0]
 
-    // Optimistic update
-    set(state => ({
-      tasks: state.tasks.map(t => (t.id === id ? backlogTask : t)),
-    }))
+      const updatedRecurrence = {
+        ...parentTask.recurrence!,
+        until: untilDate,
+      }
 
-    try {
-      const { error } = await supabase
-        .from('tasks')
-        .update({
-          status: 'backlog',
-          scheduled_at: null,
-        })
-        .eq('id', id)
-
-      if (error) throw error
-
-      return { error: null }
-    } catch (error) {
-      console.error('Error moving task to backlog:', error)
-
-      // Rollback
+      // Optimistic update
+      const originalRecurrence = parentTask.recurrence
       set(state => ({
-        tasks: state.tasks.map(t => (t.id === id ? originalTask : t)),
-        error: 'Errore nello spostamento nel backlog',
+        tasks: state.tasks.map(t =>
+          t.id === parentId
+            ? { ...t, recurrence: updatedRecurrence, updated_at: new Date().toISOString() }
+            : t
+        ),
       }))
 
-      return { error: error as Error }
-    }
-  },
+      try {
+        const { error } = await supabase
+          .from('tasks')
+          .update({ recurrence: updatedRecurrence })
+          .eq('id', parentId)
 
-  postponeTask: async (id: string, newDate: string) => {
-    const originalTask = get().tasks.find(t => t.id === id)
-    if (!originalTask) {
-      return { error: new Error('Task non trovato') }
-    }
+        if (error) throw error
 
-    const postponedTask = {
-      ...originalTask,
-      scheduled_at: newDate,
-      status: 'scheduled' as const,
-    }
+        return { error: null }
+      } catch (error) {
+        console.error('Error updating recurrence:', error)
 
-    // Optimistic update
-    set(state => ({
-      tasks: state.tasks.map(t => (t.id === id ? postponedTask : t)),
-    }))
+        // Rollback
+        set(state => ({
+          tasks: state.tasks.map(t =>
+            t.id === parentId ? { ...t, recurrence: originalRecurrence } : t
+          ),
+          error: 'Errore nell\'aggiornamento della ricorrenza',
+        }))
 
-    try {
-      const { error } = await supabase
-        .from('tasks')
-        .update({
-          scheduled_at: newDate,
-          status: 'scheduled',
-        })
-        .eq('id', id)
+        return { error: error as Error }
+      }
+    } else {
+      // Complete only this instance by creating a completed task instance
+      const instancePayload: TaskCreatePayload = {
+        user_id: parentTask.user_id,
+        title: parentTask.title,
+        description: parentTask.description,
+        weight: parentTask.weight,
+        due_date: parentTask.due_date,
+        scheduled_at: instanceDate,
+        completed_at: new Date().toISOString(),
+        status: 'done',
+        is_recurring: false,
+        recurrence: null,
+        parent_id: parentId,
+      }
 
-      if (error) throw error
+      const tempId = crypto.randomUUID()
+      const optimisticTask: Task = {
+        ...instancePayload,
+        id: tempId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
 
-      return { error: null }
-    } catch (error) {
-      console.error('Error postponing task:', error)
+      // Optimistic update
+      set(state => ({ tasks: [optimisticTask, ...state.tasks] }))
 
-      // Rollback
-      set(state => ({
-        tasks: state.tasks.map(t => (t.id === id ? originalTask : t)),
-        error: 'Errore nel rinvio del task',
-      }))
+      try {
+        const { data, error } = await supabase
+          .from('tasks')
+          .insert([instancePayload])
+          .select()
+          .single()
 
-      return { error: error as Error }
-    }
-  },
+        if (error) throw error
 
-  scheduleTask: async (id: string, scheduledAt: string) => {
-    const originalTask = get().tasks.find(t => t.id === id)
-    if (!originalTask) {
-      return { error: new Error('Task non trovato') }
-    }
+        // Replace optimistic task with real one
+        set(state => ({
+          tasks: state.tasks.map(t => (t.id === tempId ? data : t)),
+        }))
 
-    const scheduledTask = {
-      ...originalTask,
-      scheduled_at: scheduledAt,
-      status: 'scheduled' as const,
-    }
+        return { error: null }
+      } catch (error) {
+        console.error('Error creating completed instance:', error)
 
-    // Optimistic update
-    set(state => ({
-      tasks: state.tasks.map(t => (t.id === id ? scheduledTask : t)),
-    }))
+        // Rollback
+        set(state => ({
+          tasks: state.tasks.filter(t => t.id !== tempId),
+          error: 'Errore nel completamento dell\'istanza',
+        }))
 
-    try {
-      const { error } = await supabase
-        .from('tasks')
-        .update({
-          scheduled_at: scheduledAt,
-          status: 'scheduled',
-        })
-        .eq('id', id)
-
-      if (error) throw error
-
-      return { error: null }
-    } catch (error) {
-      console.error('Error scheduling task:', error)
-
-      // Rollback
-      set(state => ({
-        tasks: state.tasks.map(t => (t.id === id ? originalTask : t)),
-        error: 'Errore nella schedulazione del task',
-      }))
-
-      return { error: error as Error }
+        return { error: error as Error }
+      }
     }
   },
 

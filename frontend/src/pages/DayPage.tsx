@@ -76,7 +76,7 @@ export function DayPage() {
         {/* Task Cards */}
         <div className="space-y-2">
           {demoTasks.map(task => (
-            <SwipeableTaskCard key={task.id} task={task} onClick={() => {}} />
+            <SwipeableTaskCard key={task.id} task={task} />
           ))}
         </div>
 

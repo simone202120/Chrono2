@@ -31,7 +31,10 @@ export function TaskForm({ onClose }: TaskFormProps) {
   )
   const [scheduledDate, setScheduledDate] = useState('')
   const [scheduledTime, setScheduledTime] = useState('09:00')
-  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>('none')
+  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly' | 'custom'>('none')
+  const [recurrenceInterval, setRecurrenceInterval] = useState(1)
+  const [recurrenceWeekDays, setRecurrenceWeekDays] = useState<number[]>([])
+  const [recurrenceUntil, setRecurrenceUntil] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
@@ -57,7 +60,12 @@ export function TaskForm({ onClose }: TaskFormProps) {
       is_recurring: recurrence !== 'none',
       recurrence:
         recurrence !== 'none'
-          ? { type: recurrence, interval: 1 }
+          ? {
+              type: recurrence,
+              interval: recurrenceInterval,
+              days: recurrence === 'weekly' ? recurrenceWeekDays : undefined,
+              until: recurrenceUntil || null,
+            }
           : null,
       parent_id: null,
     })
@@ -274,7 +282,16 @@ export function TaskForm({ onClose }: TaskFormProps) {
             </label>
             <select
               value={recurrence}
-              onChange={e => setRecurrence(e.target.value as typeof recurrence)}
+              onChange={e => {
+                const value = e.target.value as typeof recurrence
+                setRecurrence(value)
+                // Reset fields when changing recurrence type
+                if (value === 'none') {
+                  setRecurrenceWeekDays([])
+                  setRecurrenceInterval(1)
+                  setRecurrenceUntil('')
+                }
+              }}
               className="w-full px-4 py-3 rounded-xl border"
               style={{
                 backgroundColor: 'var(--color-background-card)',
@@ -285,7 +302,94 @@ export function TaskForm({ onClose }: TaskFormProps) {
               <option value="daily">Ogni giorno</option>
               <option value="weekly">Ogni settimana</option>
               <option value="monthly">Ogni mese</option>
+              <option value="custom">Personalizzata</option>
             </select>
+
+            {/* Weekly: Days selection */}
+            {recurrence === 'weekly' && (
+              <div className="mt-3">
+                <label className="block text-xs mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                  Giorni della settimana
+                </label>
+                <div className="flex gap-1 justify-between">
+                  {[
+                    { day: 1, label: 'L' },
+                    { day: 2, label: 'M' },
+                    { day: 3, label: 'M' },
+                    { day: 4, label: 'G' },
+                    { day: 5, label: 'V' },
+                    { day: 6, label: 'S' },
+                    { day: 0, label: 'D' },
+                  ].map(({ day, label }) => (
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => {
+                        setRecurrenceWeekDays(prev =>
+                          prev.includes(day)
+                            ? prev.filter(d => d !== day)
+                            : [...prev, day].sort()
+                        )
+                      }}
+                      className="flex-1 aspect-square rounded-full font-semibold text-sm transition-all"
+                      style={{
+                        backgroundColor: recurrenceWeekDays.includes(day)
+                          ? 'var(--color-primary)'
+                          : 'var(--color-background-section)',
+                        color: recurrenceWeekDays.includes(day)
+                          ? 'white'
+                          : 'var(--color-text-primary)',
+                        border: recurrenceWeekDays.includes(day)
+                          ? 'none'
+                          : '1px solid var(--color-separator)',
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Custom: Interval input */}
+            {recurrence === 'custom' && (
+              <div className="mt-3">
+                <label className="block text-xs mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                  Ogni quanti giorni?
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="365"
+                  value={recurrenceInterval}
+                  onChange={e => setRecurrenceInterval(Number(e.target.value))}
+                  className="w-full px-4 py-2 rounded-xl border text-sm"
+                  style={{
+                    backgroundColor: 'var(--color-background-card)',
+                    borderColor: 'var(--color-separator)',
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Until date (for all recurrence types except 'none') */}
+            {recurrence !== 'none' && (
+              <div className="mt-3">
+                <label className="block text-xs mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                  Termina il (opzionale)
+                </label>
+                <input
+                  type="date"
+                  value={recurrenceUntil}
+                  onChange={e => setRecurrenceUntil(e.target.value)}
+                  className="w-full px-4 py-2 rounded-xl border text-sm"
+                  style={{
+                    backgroundColor: 'var(--color-background-card)',
+                    borderColor: 'var(--color-separator)',
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Submit */}

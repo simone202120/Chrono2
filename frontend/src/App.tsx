@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import { useAuthStore } from '@/store/authStore'
 import { AuthPage } from '@/pages/AuthPage'
 import { DayPage } from '@/pages/DayPage'
@@ -36,14 +37,26 @@ function App() {
 
   // Authenticated - show main app with routing
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DayPage />} />
-        <Route path="/settimana" element={<WeekPage />} />
-        <Route path="/backlog" element={<BacklogPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: 'var(--color-background-card)',
+            color: 'var(--color-text-primary)',
+            border: '1px solid var(--color-separator)',
+          },
+        }}
+      />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<DayPage />} />
+          <Route path="/settimana" element={<WeekPage />} />
+          <Route path="/backlog" element={<BacklogPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   )
 }
 

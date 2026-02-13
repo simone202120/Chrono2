@@ -277,15 +277,30 @@ export function BacklogPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <p
-                  className="text-sm"
-                  style={{ color: 'var(--color-text-tertiary)' }}
-                >
-                  {searchQuery
-                    ? 'Nessun risultato trovato'
-                    : 'Nessun impegno in backlog'}
-                </p>
+              <div className="flex flex-col items-center justify-center py-12">
+                {backlogTasks.length === 0 && !searchQuery ? (
+                  <>
+                    <p
+                      className="text-lg font-medium mb-1"
+                      style={{ color: 'var(--color-text-primary)' }}
+                    >
+                      Tutto in ordine!
+                    </p>
+                    <p
+                      className="text-sm"
+                      style={{ color: 'var(--color-text-secondary)' }}
+                    >
+                      Nessun impegno in sospeso 🎉
+                    </p>
+                  </>
+                ) : (
+                  <p
+                    className="text-sm"
+                    style={{ color: 'var(--color-text-secondary)' }}
+                  >
+                    Nessun risultato trovato
+                  </p>
+                )}
               </div>
             )}
           </div>

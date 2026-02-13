@@ -44,10 +44,34 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
   const [recurrenceWeekDays, setRecurrenceWeekDays] = useState<number[]>([])
   const [recurrenceUntil, setRecurrenceUntil] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [titleError, setTitleError] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!title.trim() || !user) return
+
+    // Validate title
+    if (!title.trim()) {
+      setTitleError(true)
+      setTimeout(() => setTitleError(false), 500)
+      return
+    }
+
+    if (!user) return
+
+    // Warn if due date is in the past
+    if (dueDate && new Date(dueDate) < new Date()) {
+      const confirmed = window.confirm('La scadenza è nel passato. Vuoi continuare?')
+      if (!confirmed) return
+    }
+
+    // Warn if scheduled time is in the past (for today)
+    if (destination === 'calendar' && scheduledDate) {
+      const scheduled = new Date(`${scheduledDate}T${scheduledTime}:00`)
+      if (scheduled < new Date()) {
+        const confirmed = window.confirm('L\'orario pianificato è nel passato. Vuoi continuare?')
+        if (!confirmed) return
+      }
+    }
 
     setIsSubmitting(true)
 
@@ -140,15 +164,23 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
             <input
               type="text"
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={e => {
+                setTitle(e.target.value)
+                if (titleError) setTitleError(false)
+              }}
               placeholder="Descrivi l'impegno..."
               required
-              className="w-full px-4 py-3 rounded-xl border text-base"
+              className={`w-full px-4 py-3 rounded-xl border text-base ${titleError ? 'animate-shake' : ''}`}
               style={{
                 backgroundColor: 'var(--color-background-card)',
-                borderColor: 'var(--color-separator)',
+                borderColor: titleError ? 'var(--color-destructive)' : 'var(--color-separator)',
               }}
             />
+            {titleError && (
+              <p className="mt-1 text-sm" style={{ color: 'var(--color-destructive)' }}>
+                Il titolo è obbligatorio
+              </p>
+            )}
           </div>
 
           {/* Description */}

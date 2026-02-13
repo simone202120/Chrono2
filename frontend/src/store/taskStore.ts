@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import type { Task, TaskCreatePayload, TaskUpdatePayload } from '@/types/task'
 
@@ -84,6 +85,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         tasks: state.tasks.map(t => (t.id === tempId ? data : t)),
       }))
 
+      toast.success('Impegno aggiunto ✓')
       return { error: null }
     } catch (error) {
       console.error('Error creating task:', error)
@@ -94,6 +96,12 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         error: 'Errore nella creazione del task',
       }))
 
+      toast.error('Errore nella creazione. Riprova.', {
+        action: {
+          label: 'Riprova',
+          onClick: () => {}
+        }
+      })
       return { error: error as Error }
     }
   },
@@ -151,6 +159,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
       if (error) throw error
 
+      toast.success('Impegno eliminato')
       return { error: null }
     } catch (error) {
       console.error('Error deleting task:', error)
@@ -193,6 +202,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
       if (error) throw error
 
+      toast.success('Completato ✓')
       return { error: null }
     } catch (error) {
       console.error('Error completing task:', error)
@@ -235,6 +245,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
       if (error) throw error
 
+      toast.success('Spostato nel backlog')
       return { error: null }
     } catch (error) {
       console.error('Error moving task to backlog:', error)

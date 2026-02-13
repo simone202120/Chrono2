@@ -2,7 +2,7 @@ import type { TaskWeight } from '@/types/task'
 
 interface WeightBadgeProps {
   weight: TaskWeight
-  size?: 'sm' | 'md'
+  size?: 'sm' | 'md' | 'lg'
 }
 
 const WEIGHT_COLORS: Record<TaskWeight, string> = {
@@ -31,6 +31,7 @@ export function WeightBadge({ weight, size = 'md' }: WeightBadgeProps) {
   const sizeClasses = {
     sm: 'px-2 py-0.5 text-xs',
     md: 'px-3 py-1 text-sm',
+    lg: 'px-4 py-2 text-lg',
   }
 
   return (

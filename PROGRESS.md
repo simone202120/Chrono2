@@ -91,15 +91,61 @@
   - ✅ completeTask aggiunto a taskStore
   - ✅ Integrato in BacklogPanel e DayPage
   - ✅ Disabled on completed tasks
-- [ ] Task 2.5: TaskDetail bottom sheet
-- [ ] Task 2.6: DayPage — Vista Giorno
+- [x] Task 2.5: TaskDetail bottom sheet *(completato 2026-02-13)*
+  - ✅ TaskDetail.tsx con visualizzazione completa informazioni task
+  - ✅ Pulsanti azione: Completa, Sposta in backlog, Rinvia, Elimina
+  - ✅ Rinvia con date/time picker inline
+  - ✅ Integrato con SwipeableTaskCard: tap apre detail, swipe azioni
+  - ✅ Rilevamento tap (10px) vs swipe (80px)
+  - ✅ Funzioni store aggiunte: moveToBacklog, postponeTask, scheduleTask
+  - ✅ WeightBadge esteso con size 'lg' per detail view
+- [x] Task 2.6: DayPage — Vista Giorno *(completato 2026-02-13)*
+  - ✅ useCalendar hook per navigazione date e formattazione
+  - ✅ AppShell esteso con headerLeftAction e title ReactNode
+  - ✅ Header con navigazione ◀▶ tra giorni
+  - ✅ Data centrata (blu se oggi, nero altrimenti)
+  - ✅ Sezione Agenda con task filtrati per data
+  - ✅ Badge peso totale colorato (verde<5, giallo<10, rosso≥10)
+  - ✅ Empty state con icona e CTA
+  - ✅ BacklogPanel sotto l'agenda
+  - ✅ Swipe orizzontale per cambiare giorno (threshold 50px)
+  - ✅ Integrazione completa con taskStore
 
 ## Sprint 3 — Calendario
 
-- [ ] Task 3.1: WeekView — griglia settimana
-- [ ] Task 3.2: Drag & Drop — backlog verso calendario
-- [ ] Task 3.3: BacklogPage full screen
-- [ ] Task 3.4: Riepilogo navigazione + link tra viste
+- [x] Task 3.1: WeekView — griglia settimana *(completato 2026-02-13)*
+  - ✅ useCalendar esteso con navigazione settimana (weekOffset, goToNextWeek, goToPreviousWeek)
+  - ✅ weekDates array con 7 giorni (Lun-Dom)
+  - ✅ weekRangeLabel per header (es: "10-16 Febbraio 2025")
+  - ✅ DayColumn component con day name, date, task dots (max 3 + "+N")
+  - ✅ Oggi evidenziato con cerchio blu
+  - ✅ WeekView component con griglia 7 colonne
+  - ✅ WeekPage completa con header navigazione e BacklogPanel
+  - ✅ Tap su giorno naviga a DayPage con data selezionata
+- [x] Task 3.2: Drag & Drop — backlog verso calendario *(completato 2026-02-13)*
+  - ✅ @dnd-kit installato e configurato
+  - ✅ AppShell con DndContext (touch + mouse sensors)
+  - ✅ DragOverlay con ghost preview
+  - ✅ BacklogItem draggable (long press 150ms)
+  - ✅ DayColumn droppable con highlight blu
+  - ✅ TaskForm esteso per schedulare task esistenti
+  - ✅ Drop apre TaskForm pre-compilato con data
+  - ✅ Haptic feedback su drop
+- [x] Task 3.3: BacklogPage full screen *(completato 2026-02-13)*
+  - ✅ Search bar iOS-style per filtrare per titolo/descrizione
+  - ✅ Sezione "In scadenza" con task entro 7 giorni
+  - ✅ Badge giorni rimanenti su ogni card
+  - ✅ Filtri completi (peso, scadenza, ricorrenti)
+  - ✅ FAB con scroll detection (hide/show)
+  - ✅ Header con contatore totale e badge filtri attivi
+  - ✅ Sort badge visibile
+- [x] Task 3.4: Riepilogo navigazione + link tra viste *(completato 2026-02-13)*
+  - ✅ Pulsante "Oggi" in DayPage quando selectedDate != oggi
+  - ✅ BottomNav "Oggi" chiama goToToday()
+  - ✅ Navigazione coerente tra viste
+  - ✅ selectedDate condiviso via useCalendar hook
+  - ✅ Header DayPage aggiornato con data corretta
+  - ✅ Tap su giorno in WeekView → DayPage con quella data
 
 ## Sprint 4 — Avanzato
 
@@ -165,6 +211,12 @@ Sprint 4  [██████] 4/4   (100%) ✅
 Sprint 5  [░░░░░░] 0/4   (0%)
 
 TOTALE    [██████████████] 14/24 task  (58%)
+Sprint 2  [██████] 6/6   (100%) ✅
+Sprint 3  [██████] 4/4   (100%) ✅
+Sprint 4  [░░░░░░] 0/4   (0%)
+Sprint 5  [░░░░░░] 0/4   (0%)
+
+TOTALE    [████████████████] 16/24 task  (67%)
 ```
 
 ---

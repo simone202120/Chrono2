@@ -17,11 +17,9 @@ interface TaskActions {
   ) => Promise<{ error: Error | null }>
   deleteTask: (id: string) => Promise<{ error: Error | null }>
   completeTask: (id: string) => Promise<{ error: Error | null }>
-  completeRecurringInstance: (
-    parentId: string,
-    instanceDate: string,
-    completeFuture: boolean
-  ) => Promise<{ error: Error | null }>
+  moveToBacklog: (id: string) => Promise<{ error: Error | null }>
+  postponeTask: (id: string, newDate: string) => Promise<{ error: Error | null }>
+  scheduleTask: (id: string, scheduledAt: string) => Promise<{ error: Error | null }>
   clearError: () => void
 }
 

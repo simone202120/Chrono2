@@ -3,10 +3,12 @@ import type { FormEvent } from 'react'
 import { X } from 'lucide-react'
 import { useTaskStore } from '@/store/taskStore'
 import { useAuthStore } from '@/store/authStore'
-import type { TaskWeight } from '@/types/task'
+import type { Task, TaskWeight } from '@/types/task'
 
 interface TaskFormProps {
   onClose: () => void
+  existingTask?: Task
+  initialScheduledDate?: string
 }
 
 /**
@@ -17,24 +19,28 @@ interface TaskFormProps {
  * - Date and time pickers
  * - Adaptive CTA button
  */
-export function TaskForm({ onClose }: TaskFormProps) {
+export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFormProps) {
   const user = useAuthStore(state => state.user)
   const createTask = useTaskStore(state => state.createTask)
+  const scheduleTask = useTaskStore(state => state.scheduleTask)
 
-  // Form state
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [weight, setWeight] = useState<TaskWeight>(3)
-  const [dueDate, setDueDate] = useState('')
+  // Form state - pre-fill if editing existing task
+  const [title, setTitle] = useState(existingTask?.title || '')
+  const [description, setDescription] = useState(existingTask?.description || '')
+  const [weight, setWeight] = useState<TaskWeight>(existingTask?.weight || 3)
+  const [dueDate, setDueDate] = useState(existingTask?.due_date || '')
   const [destination, setDestination] = useState<'backlog' | 'calendar'>(
-    'backlog'
+    initialScheduledDate || existingTask?.scheduled_at ? 'calendar' : 'backlog'
   )
-  const [scheduledDate, setScheduledDate] = useState('')
-  const [scheduledTime, setScheduledTime] = useState('09:00')
-  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly' | 'custom'>('none')
-  const [recurrenceInterval, setRecurrenceInterval] = useState(1)
-  const [recurrenceWeekDays, setRecurrenceWeekDays] = useState<number[]>([])
-  const [recurrenceUntil, setRecurrenceUntil] = useState('')
+  const [scheduledDate, setScheduledDate] = useState(
+    initialScheduledDate || existingTask?.scheduled_at?.split('T')[0] || ''
+  )
+  const [scheduledTime, setScheduledTime] = useState(
+    existingTask?.scheduled_at?.split('T')[1]?.slice(0, 5) || '09:00'
+  )
+  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>(
+    existingTask?.is_recurring ? 'weekly' : 'none'
+  )
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
@@ -107,7 +113,9 @@ export function TaskForm({ onClose }: TaskFormProps) {
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">Nuovo impegno</h2>
+          <h2 className="text-xl font-semibold">
+            {existingTask ? 'Schedula impegno' : 'Nuovo impegno'}
+          </h2>
           <button
             type="button"
             onClick={onClose}

@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react'
 import { SlidersHorizontal, Calendar, Plus } from 'lucide-react'
 import { useTaskStore } from '@/store/taskStore'
-import { SwipeableTaskCard } from '@/components/task/SwipeableTaskCard'
+import { BacklogItem } from './BacklogItem'
+import { TaskDetail } from '@/components/task/TaskDetail'
+import type { Task } from '@/types/task'
 import {
   BacklogFilters,
   countActiveFilters,
@@ -24,6 +26,7 @@ export function BacklogPanel({ onAddTask }: BacklogPanelProps) {
   const tasks = useTaskStore(state => state.tasks)
   const loading = useTaskStore(state => state.loading)
   const [showFilters, setShowFilters] = useState(false)
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [filters, setFilters] = useState<BacklogFiltersState>({
     sortBy: 'weight-desc',
     dueSoon: false,
@@ -228,7 +231,7 @@ export function BacklogPanel({ onAddTask }: BacklogPanelProps) {
                   animationFillMode: 'both',
                 }}
               >
-                <SwipeableTaskCard task={task} />
+                <BacklogItem task={task} onTap={setSelectedTask} />
               </div>
             ))}
           </div>
@@ -257,6 +260,11 @@ export function BacklogPanel({ onAddTask }: BacklogPanelProps) {
           onApply={setFilters}
           onClose={() => setShowFilters(false)}
         />
+      )}
+
+      {/* Task Detail modal */}
+      {selectedTask && (
+        <TaskDetail task={selectedTask} onClose={() => setSelectedTask(null)} />
       )}
     </div>
   )

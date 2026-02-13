@@ -26,6 +26,7 @@ export function DayPage() {
     selectedDateISO,
     goToNextDay,
     goToPreviousDay,
+    goToToday,
     isToday,
     dateLabel,
     headerDateLabel,
@@ -124,6 +125,19 @@ export function DayPage() {
             >
               <ChevronRight size={20} />
             </button>
+            {!isToday && (
+              <button
+                onClick={goToToday}
+                className="ml-1 px-3 py-1 text-xs font-semibold rounded-full"
+                style={{
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                }}
+                aria-label="Vai a oggi"
+              >
+                Oggi
+              </button>
+            )}
           </div>
         }
         headerAction={

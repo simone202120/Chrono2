@@ -20,7 +20,10 @@ export default defineConfig({
         theme_color: '#007AFF',
         background_color: '#F2F2F7',
         display: 'standalone',
+        orientation: 'portrait',
         start_url: '/',
+        scope: '/',
+        categories: ['productivity', 'lifestyle'],
         icons: [
           {
             src: 'pwa-192x192.png',

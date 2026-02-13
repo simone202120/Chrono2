@@ -7,6 +7,7 @@ import { TaskForm } from '@/components/task/TaskForm'
 import { BacklogPanel } from '@/components/backlog/BacklogPanel'
 import { useTaskStore } from '@/store/taskStore'
 import { useCalendar } from '@/hooks/useCalendar'
+import type { Task } from '@/types/task'
 
 /**
  * DayPage - Main day view page
@@ -19,6 +20,8 @@ import { useCalendar } from '@/hooks/useCalendar'
 export function DayPage() {
   const tasks = useTaskStore(state => state.tasks)
   const [showForm, setShowForm] = useState(false)
+  const [droppedTask, setDroppedTask] = useState<Task | null>(null)
+  const [droppedDate, setDroppedDate] = useState<string | null>(null)
   const {
     selectedDateISO,
     goToNextDay,
@@ -58,6 +61,17 @@ export function DayPage() {
     return 'var(--color-destructive)' // Red
   }, [totalWeight])
 
+  // Drag & drop handlers
+  const handleTaskDrop = (task: Task, dateString: string) => {
+    setDroppedTask(task)
+    setDroppedDate(dateString)
+  }
+
+  const handleCloseScheduleForm = () => {
+    setDroppedTask(null)
+    setDroppedDate(null)
+  }
+
   // Swipe handlers
   const handlePointerDown = (e: React.PointerEvent) => {
     startXRef.current = e.clientX
@@ -83,6 +97,7 @@ export function DayPage() {
   return (
     <>
       <AppShell
+        onTaskDrop={handleTaskDrop}
         title={
           <span
             className="text-base font-semibold capitalize"
@@ -198,6 +213,15 @@ export function DayPage() {
 
       {/* Task Form Modal */}
       {showForm && <TaskForm onClose={() => setShowForm(false)} />}
+
+      {/* Schedule Task Form (from drag & drop) */}
+      {droppedTask && droppedDate && (
+        <TaskForm
+          existingTask={droppedTask}
+          initialScheduledDate={droppedDate}
+          onClose={handleCloseScheduleForm}
+        />
+      )}
     </>
   )
 }

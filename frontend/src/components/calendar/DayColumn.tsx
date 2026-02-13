@@ -1,5 +1,6 @@
-import { format, isSameDay } from 'date-fns'
+import { format, isSameDay, startOfDay } from 'date-fns'
 import { it } from 'date-fns/locale'
+import { useDroppable } from '@dnd-kit/core'
 import type { Task } from '@/types/task'
 import { cn } from '@/lib/utils'
 
@@ -18,14 +19,20 @@ const WEIGHT_COLORS: Record<number, string> = {
 }
 
 /**
- * DayColumn - Single day column in week view
+ * DayColumn - Single day column in week view (droppable)
  * - Shows day name and date number
  * - Highlights today with blue circle
  * - Shows up to 3 task dots (colored by weight)
  * - Shows "+N" if more than 3 tasks
  * - Tap to navigate to day view
+ * - Droppable: highlights on drag over
  */
 export function DayColumn({ date, tasks, onPress }: DayColumnProps) {
+  const dateString = format(startOfDay(date), 'yyyy-MM-dd')
+  const { setNodeRef, isOver } = useDroppable({
+    id: dateString,
+  })
+
   const isToday = isSameDay(date, new Date())
   const dayName = format(date, 'EEEEEE', { locale: it }) // Lu, Ma, etc.
   const dayNumber = format(date, 'd')
@@ -35,9 +42,17 @@ export function DayColumn({ date, tasks, onPress }: DayColumnProps) {
 
   return (
     <button
+      ref={setNodeRef}
       onClick={() => onPress(date)}
-      className="flex-1 flex flex-col items-center py-3 px-1 min-w-0"
-      style={{ minWidth: '40px' }}
+      className={cn(
+        'flex-1 flex flex-col items-center py-3 px-1 min-w-0 rounded-lg transition-all',
+        isOver && 'ring-2 ring-offset-1'
+      )}
+      style={{
+        minWidth: '40px',
+        backgroundColor: isOver ? 'rgba(0, 122, 255, 0.05)' : 'transparent',
+        borderColor: isOver ? 'var(--color-primary)' : 'transparent',
+      }}
     >
       {/* Day name */}
       <div

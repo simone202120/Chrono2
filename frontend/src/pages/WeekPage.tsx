@@ -7,6 +7,7 @@ import { BacklogPanel } from '@/components/backlog/BacklogPanel'
 import { TaskForm } from '@/components/task/TaskForm'
 import { useTaskStore } from '@/store/taskStore'
 import { useCalendar } from '@/hooks/useCalendar'
+import type { Task } from '@/types/task'
 
 /**
  * WeekPage - Week view page
@@ -19,6 +20,8 @@ export function WeekPage() {
   const navigate = useNavigate()
   const tasks = useTaskStore(state => state.tasks)
   const [showForm, setShowForm] = useState(false)
+  const [droppedTask, setDroppedTask] = useState<Task | null>(null)
+  const [droppedDate, setDroppedDate] = useState<string | null>(null)
   const { weekDates, weekRangeLabel, goToNextWeek, goToPreviousWeek, setSelectedDate } =
     useCalendar()
 
@@ -27,9 +30,20 @@ export function WeekPage() {
     navigate('/')
   }
 
+  const handleTaskDrop = (task: Task, dateString: string) => {
+    setDroppedTask(task)
+    setDroppedDate(dateString)
+  }
+
+  const handleCloseScheduleForm = () => {
+    setDroppedTask(null)
+    setDroppedDate(null)
+  }
+
   return (
     <>
       <AppShell
+        onTaskDrop={handleTaskDrop}
         title={
           <span className="text-base font-semibold capitalize">
             {weekRangeLabel}
@@ -81,6 +95,15 @@ export function WeekPage() {
 
       {/* Task Form Modal */}
       {showForm && <TaskForm onClose={() => setShowForm(false)} />}
+
+      {/* Schedule Task Form (from drag & drop) */}
+      {droppedTask && droppedDate && (
+        <TaskForm
+          existingTask={droppedTask}
+          initialScheduledDate={droppedDate}
+          onClose={handleCloseScheduleForm}
+        />
+      )}
     </>
   )
 }

@@ -3,18 +3,19 @@ import { BottomNav } from './BottomNav'
 
 interface AppShellProps {
   children: ReactNode
-  title?: string
+  title?: ReactNode
   headerAction?: ReactNode
+  headerLeftAction?: ReactNode
 }
 
 /**
  * AppShell - Main layout wrapper
- * - Header with dynamic title and optional action button
+ * - Header with dynamic title and optional action buttons
  * - Scrollable content area
  * - Bottom navigation
  * - iOS safe areas support
  */
-export function AppShell({ children, title, headerAction }: AppShellProps) {
+export function AppShell({ children, title, headerAction, headerLeftAction }: AppShellProps) {
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -31,8 +32,12 @@ export function AppShell({ children, title, headerAction }: AppShellProps) {
           borderBottom: '1px solid var(--color-separator)',
         }}
       >
-        <div className="flex-1" />
-        <h1 className="text-base font-semibold">{title || 'Agile Planner'}</h1>
+        <div className="flex-1 flex justify-start">{headerLeftAction}</div>
+        {typeof title === 'string' ? (
+          <h1 className="text-base font-semibold">{title || 'Agile Planner'}</h1>
+        ) : (
+          <div className="text-base font-semibold">{title || 'Agile Planner'}</div>
+        )}
         <div className="flex-1 flex justify-end">{headerAction}</div>
       </header>
 

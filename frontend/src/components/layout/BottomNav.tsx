@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom'
-import { Calendar, CalendarDays, List } from 'lucide-react'
+import { Calendar, CalendarDays, List, Settings } from 'lucide-react'
 import { useCalendar } from '@/hooks/useCalendar'
 
 /**
  * BottomNav - Bottom navigation bar
- * - 3 tabs: Oggi (Day), Settimana (Week), Backlog
+ * - 4 tabs: Oggi (Day), Settimana (Week), Backlog, Settings
  * - iOS-styled with safe area padding
  * - Active tab highlighted in primary color
  * - "Oggi" tab resets selectedDate to today on click
@@ -16,6 +16,7 @@ export function BottomNav() {
     { to: '/', icon: Calendar, label: 'Oggi', onClick: goToToday },
     { to: '/settimana', icon: CalendarDays, label: 'Settimana' },
     { to: '/backlog', icon: List, label: 'Backlog' },
+    { to: '/settings', icon: Settings, label: 'Altro' },
   ]
 
   return (

@@ -6,6 +6,7 @@ import { AuthPage } from '@/pages/AuthPage'
 import { DayPage } from '@/pages/DayPage'
 import { WeekPage } from '@/pages/WeekPage'
 import { BacklogPage } from '@/pages/BacklogPage'
+import { SettingsPage } from '@/pages/SettingsPage'
 
 function App() {
   const { user, loading, initialized, initialize } = useAuthStore()
@@ -53,6 +54,7 @@ function App() {
           <Route path="/" element={<DayPage />} />
           <Route path="/settimana" element={<WeekPage />} />
           <Route path="/backlog" element={<BacklogPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

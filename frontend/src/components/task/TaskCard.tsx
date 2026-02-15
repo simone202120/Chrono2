@@ -1,7 +1,6 @@
 import { format } from 'date-fns'
 import { it } from 'date-fns/locale'
 import { Calendar, Clock, AlertCircle, RefreshCw } from 'lucide-react'
-import { WeightBadge } from './WeightBadge'
 import type { Task } from '@/types/task'
 import { cn } from '@/lib/utils'
 
@@ -24,76 +23,73 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
     new Date(task.due_date).getTime() - Date.now() < 48 * 60 * 60 * 1000
 
   return (
-    <button
+    <div
       onClick={onClick}
       className={cn(
-        'w-full p-4 rounded-xl text-left transition-all active:scale-[0.97]',
-        isCompleted && 'opacity-50'
+        'modern-card w-full p-4 text-left cursor-pointer select-none',
+        isCompleted ? 'opacity-60 bg-gray-50' : 'bg-white'
       )}
-      style={{
-        backgroundColor: 'var(--color-background-card)',
-        border: '1px solid var(--color-separator)',
-      }}
     >
-      <div className="flex items-start gap-3">
-        {/* Weight Badge */}
-        <WeightBadge weight={task.weight} size="sm" />
+      <div className="flex items-start gap-4">
+        {/* Weight Indicator (Left Border) */}
+        <div
+          className="w-1.5 self-stretch rounded-full flex-shrink-0"
+          style={{ backgroundColor: `var(--color-weight-${task.weight})` }}
+        />
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
-          {/* Title */}
-          <h3
-            className={cn(
-              'text-base font-medium mb-1',
-              isCompleted && 'line-through'
-            )}
-          >
-            {task.title}
-          </h3>
+        <div className="flex-1 min-w-0 py-0.5">
+          <div className="flex items-start justify-between gap-2">
+            <h3
+              className={cn(
+                'text-base font-semibold leading-tight text-gray-900',
+                isCompleted && 'line-through text-gray-500'
+              )}
+            >
+              {task.title}
+            </h3>
+            
+            {/* Status Icons */}
+            <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
+              {isDueSoon && !isCompleted && (
+                <AlertCircle size={16} className="text-red-500" />
+              )}
+              {task.is_recurring && (
+                <RefreshCw size={14} className="text-blue-500" />
+              )}
+            </div>
+          </div>
 
-          {/* Metadata */}
-          <div
-            className="flex items-center gap-3 text-xs"
-            style={{ color: 'var(--color-text-secondary)' }}
-          >
-            {/* Scheduled time */}
+          {/* Description (if any) */}
+          {task.description && (
+            <p className="text-sm text-gray-500 mt-1 line-clamp-1">
+              {task.description}
+            </p>
+          )}
+
+          {/* Metadata Footer */}
+          <div className="flex items-center gap-4 mt-3 text-xs font-medium text-gray-400">
+            {/* Time */}
             {task.scheduled_at && (
-              <span className="flex items-center gap-1">
-                <Clock size={12} />
-                {format(new Date(task.scheduled_at), 'HH:mm')}
-              </span>
+              <div className="flex items-center gap-1.5 text-gray-600">
+                <Clock size={14} />
+                <span>{format(new Date(task.scheduled_at), 'HH:mm')}</span>
+              </div>
             )}
 
-            {/* Due date */}
+            {/* Due Date */}
             {task.due_date && (
-              <span className="flex items-center gap-1">
-                <Calendar size={12} />
-                {format(new Date(task.due_date), 'd MMM', { locale: it })}
-              </span>
-            )}
-
-            {/* Completed */}
-            {isCompleted && task.completed_at && (
-              <span>
-                Completato {format(new Date(task.completed_at), 'd MMM')}
-              </span>
+              <div className={cn(
+                "flex items-center gap-1.5",
+                isDueSoon ? "text-red-500" : "text-gray-500"
+              )}>
+                <Calendar size={14} />
+                <span>{format(new Date(task.due_date), 'd MMM', { locale: it })}</span>
+              </div>
             )}
           </div>
         </div>
-
-        {/* Icons */}
-        <div className="flex items-center gap-2">
-          {/* Due soon warning */}
-          {isDueSoon && !isCompleted && (
-            <AlertCircle size={16} style={{ color: 'var(--color-destructive)' }} />
-          )}
-
-          {/* Recurring indicator */}
-          {task.is_recurring && (
-            <RefreshCw size={16} style={{ color: 'var(--color-primary)' }} />
-          )}
-        </div>
       </div>
-    </button>
+    </div>
   )
 }

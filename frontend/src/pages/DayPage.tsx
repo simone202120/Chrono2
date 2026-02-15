@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef } from 'react'
 import { format, startOfDay } from 'date-fns'
 import { ChevronLeft, ChevronRight, Plus, Calendar } from 'lucide-react'
+import { useDroppable } from '@dnd-kit/core'
 import { AppShell } from '@/components/layout/AppShell'
 import { SwipeableTaskCard } from '@/components/task/SwipeableTaskCard'
 import { TaskForm } from '@/components/task/TaskForm'
@@ -8,6 +9,7 @@ import { BacklogPanel } from '@/components/backlog/BacklogPanel'
 import { useTaskStore } from '@/store/taskStore'
 import { useCalendar } from '@/hooks/useCalendar'
 import type { Task } from '@/types/task'
+import { cn } from '@/lib/utils'
 
 /**
  * DayPage - Main day view page
@@ -20,8 +22,6 @@ import type { Task } from '@/types/task'
 export function DayPage() {
   const tasks = useTaskStore(state => state.tasks)
   const [showForm, setShowForm] = useState(false)
-  const [droppedTask, setDroppedTask] = useState<Task | null>(null)
-  const [droppedDate, setDroppedDate] = useState<string | null>(null)
   const {
     selectedDateISO,
     goToNextDay,
@@ -32,9 +32,10 @@ export function DayPage() {
     headerDateLabel,
   } = useCalendar()
 
-  // Swipe detection
-  const startXRef = useRef(0)
-  const [isDragging, setIsDragging] = useState(false)
+  // Drop zone for the day
+  const { setNodeRef, isOver } = useDroppable({
+    id: selectedDateISO,
+  })
 
   // Get tasks for selected date
   const dayTasks = useMemo(() => {
@@ -62,15 +63,13 @@ export function DayPage() {
     return 'var(--color-destructive)' // Red
   }, [totalWeight])
 
-  // Drag & drop handlers
-  const handleTaskDrop = (task: Task, dateString: string) => {
-    setDroppedTask(task)
-    setDroppedDate(dateString)
-  }
+  const scheduleTask = useTaskStore(state => state.scheduleTask)
 
-  const handleCloseScheduleForm = () => {
-    setDroppedTask(null)
-    setDroppedDate(null)
+  // Drag & drop handlers
+  const handleTaskDrop = async (task: Task, dateString: string) => {
+    // Direct schedule to 09:00 of the target day
+    const scheduledAt = `${dateString}T09:00:00`
+    await scheduleTask(task.id, scheduledAt)
   }
 
   // Swipe handlers
@@ -158,7 +157,13 @@ export function DayPage() {
           style={{ touchAction: 'pan-y' }}
         >
           {/* Agenda Section */}
-          <div className="p-4">
+          <div
+            ref={setNodeRef}
+            className={cn(
+              "p-4 transition-colors duration-200 rounded-3xl mx-2 mt-2",
+              isOver ? "bg-indigo-50/50 ring-2 ring-indigo-500 ring-offset-2" : ""
+            )}
+          >
             {/* Section Header */}
             <div className="flex items-center justify-between mb-3">
               <h2
@@ -219,23 +224,19 @@ export function DayPage() {
           </div>
 
           {/* Backlog Section */}
-          <div className="mt-6">
-            <BacklogPanel onAddTask={() => setShowForm(true)} />
+          <div className="mt-6 px-4 pb-24">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400 mb-3 px-2">
+              Backlog
+            </h2>
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+              <BacklogPanel onAddTask={() => setShowForm(true)} />
+            </div>
           </div>
         </div>
       </AppShell>
 
       {/* Task Form Modal */}
       {showForm && <TaskForm onClose={() => setShowForm(false)} />}
-
-      {/* Schedule Task Form (from drag & drop) */}
-      {droppedTask && droppedDate && (
-        <TaskForm
-          existingTask={droppedTask}
-          initialScheduledDate={droppedDate}
-          onClose={handleCloseScheduleForm}
-        />
-      )}
     </>
   )
 }

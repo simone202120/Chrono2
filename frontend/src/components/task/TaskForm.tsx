@@ -33,7 +33,9 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
     initialScheduledDate || existingTask?.scheduled_at ? 'calendar' : 'backlog'
   )
   const [scheduledDate, setScheduledDate] = useState(
-    initialScheduledDate || existingTask?.scheduled_at?.split('T')[0] || ''
+    initialScheduledDate ||
+      existingTask?.scheduled_at?.split('T')[0] ||
+      new Date().toISOString().split('T')[0]
   )
   const [scheduledTime, setScheduledTime] = useState(
     existingTask?.scheduled_at?.split('T')[1]?.slice(0, 5) || '09:00'
@@ -41,6 +43,17 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
   const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>(
     existingTask?.is_recurring ? 'weekly' : 'none'
   )
+  // Recurrence details state
+  const [recurrenceInterval, setRecurrenceInterval] = useState(
+    existingTask?.recurrence?.interval || 1
+  )
+  const [recurrenceWeekDays, setRecurrenceWeekDays] = useState<number[]>(
+    existingTask?.recurrence?.days || []
+  )
+  const [recurrenceUntil, setRecurrenceUntil] = useState(
+    existingTask?.recurrence?.until || ''
+  )
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {

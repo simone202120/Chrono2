@@ -1,7 +1,7 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import type { Task } from '@/types/task'
-import { WeightBadge } from '@/components/task/WeightBadge'
+import { cn } from '@/lib/utils'
 
 interface BacklogItemProps {
   task: Task
@@ -10,7 +10,7 @@ interface BacklogItemProps {
 
 /**
  * BacklogItem - Draggable task item for backlog
- * - Shows task title, description, and weight badge
+ * - Shows task title, description, and weight indicator
  * - Long press (150ms) to drag
  * - Tap to open detail
  * - Visual feedback during drag (cursor: grab)
@@ -18,15 +18,11 @@ interface BacklogItemProps {
 export function BacklogItem({ task, onTap }: BacklogItemProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.id,
-    data: {
-      task,
-    },
+    data: { task },
   })
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    cursor: isDragging ? 'grabbing' : 'grab',
-    opacity: isDragging ? 0.5 : 1,
   }
 
   return (
@@ -35,39 +31,27 @@ export function BacklogItem({ task, onTap }: BacklogItemProps) {
       {...listeners}
       {...attributes}
       onClick={() => !isDragging && onTap(task)}
-      className="rounded-xl p-3 active:scale-[0.98] transition-transform touch-none"
-      role="button"
-      tabIndex={0}
-      onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          onTap(task)
-        }
-      }}
-      style={{
-        ...style,
-        backgroundColor: 'var(--color-background-card)',
-        border: '1px solid var(--color-separator)',
-      }}
+      className={cn(
+        "modern-card p-3 flex items-start gap-3 cursor-grab active:cursor-grabbing touch-none select-none bg-white",
+        isDragging && "opacity-50 scale-95 shadow-xl rotate-2 z-50"
+      )}
+      style={style}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h3
-            className="font-medium text-sm mb-1"
-            style={{ color: 'var(--color-text-primary)' }}
-          >
-            {task.title}
-          </h3>
-          {task.description && (
-            <p
-              className="text-xs line-clamp-1"
-              style={{ color: 'var(--color-text-secondary)' }}
-            >
-              {task.description}
-            </p>
-          )}
-        </div>
-        <WeightBadge weight={task.weight} />
+      {/* Weight Indicator */}
+      <div
+        className="w-1 self-stretch rounded-full flex-shrink-0"
+        style={{ backgroundColor: `var(--color-weight-${task.weight})` }}
+      />
+
+      <div className="flex-1 min-w-0 py-0.5">
+        <h3 className="font-medium text-sm text-slate-900 leading-tight">
+          {task.title}
+        </h3>
+        {task.description && (
+          <p className="text-xs text-slate-500 mt-1 line-clamp-1">
+            {task.description}
+          </p>
+        )}
       </div>
     </div>
   )

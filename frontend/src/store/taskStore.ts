@@ -316,5 +316,26 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     }
   },
 
+  moveToBacklog: async (id: string) => {
+    return get().updateTask(id, {
+      status: 'backlog',
+      scheduled_at: null,
+    })
+  },
+
+  postponeTask: async (id: string, newDate: string) => {
+    return get().updateTask(id, {
+      status: 'scheduled',
+      scheduled_at: newDate,
+    })
+  },
+
+  scheduleTask: async (id: string, scheduledAt: string) => {
+    return get().updateTask(id, {
+      status: 'scheduled',
+      scheduled_at: scheduledAt,
+    })
+  },
+
   clearError: () => set({ error: null }),
 }))

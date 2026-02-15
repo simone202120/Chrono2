@@ -11,6 +11,7 @@ import {
 } from '@dnd-kit/core'
 import { BottomNav } from './BottomNav'
 import type { Task } from '@/types/task'
+import { cn } from '@/lib/utils'
 
 interface AppShellProps {
   children: ReactNode
@@ -21,12 +22,10 @@ interface AppShellProps {
 }
 
 /**
- * AppShell - Main layout wrapper with drag & drop context
- * - DndContext with touch and mouse sensors
- * - Header with dynamic title and optional action buttons
- * - Scrollable content area
- * - Bottom navigation
- * - iOS safe areas support
+ * AppShell - Modern Layout
+ * - Minimalist Header
+ * - Floating Bottom Nav Integration
+ * - Drag & Drop Context
  */
 export function AppShell({
   children,
@@ -39,13 +38,13 @@ export function AppShell({
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      distance: 10, // 10px tolerance before drag starts
+      distance: 10,
     },
   })
 
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 150, // 150ms long press
+      delay: 150,
       tolerance: 5,
     },
   })
@@ -66,12 +65,10 @@ export function AppShell({
       const task = active.data.current.task as Task
       const dateString = over.id as string
 
-      // Call the drop handler if provided
       if (onTaskDrop) {
         onTaskDrop(task, dateString)
       }
 
-      // Haptic feedback if available
       if (navigator.vibrate) {
         navigator.vibrate(50)
       }
@@ -91,32 +88,31 @@ export function AppShell({
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div
-        className="min-h-screen flex flex-col"
-        style={{
-          paddingBottom: 'env(safe-area-inset-bottom)',
-        }}
-      >
-        {/* Header */}
+      <div className="min-h-screen flex flex-col bg-slate-50">
+        {/* Header - Glassmorphic if desired, but let's keep it clean */}
         <header
-          className="sticky top-0 z-10 flex items-center justify-between px-4"
-          style={{
-            height: '52px',
-            backgroundColor: 'var(--color-background-main)',
-            borderBottom: '1px solid var(--color-separator)',
-          }}
+          className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 transition-all duration-300 backdrop-blur-md bg-white/80 border-b border-slate-100/50 supports-[backdrop-filter]:bg-white/60"
         >
           <div className="flex-1 flex justify-start">{headerLeftAction}</div>
-          {typeof title === 'string' ? (
-            <h1 className="text-base font-semibold">{title || 'Agile Planner'}</h1>
-          ) : (
-            <div className="text-base font-semibold">{title || 'Agile Planner'}</div>
-          )}
+          
+          <div className="flex-grow text-center">
+            {typeof title === 'string' ? (
+              <h1 className="text-lg font-bold tracking-tight text-slate-800">{title}</h1>
+            ) : (
+              <div className="text-lg font-bold tracking-tight text-slate-800">{title}</div>
+            )}
+          </div>
+          
           <div className="flex-1 flex justify-end">{headerAction}</div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto pb-safe-bottom">{children}</main>
+        <main 
+          className="flex-1 overflow-y-auto pb-32 pt-2 px-2"
+          style={{ scrollBehavior: 'smooth' }}
+        >
+          {children}
+        </main>
 
         {/* Bottom Navigation */}
         <BottomNav />
@@ -126,23 +122,13 @@ export function AppShell({
       <DragOverlay dropAnimation={null}>
         {activeTask ? (
           <div
-            className="rounded-xl p-3 shadow-lg"
-            style={{
-              backgroundColor: 'var(--color-background-card)',
-              border: '1px solid var(--color-separator)',
-              opacity: 0.8,
-              transform: 'rotate(2deg)',
-              width: '280px',
-            }}
+            className="rounded-2xl p-4 shadow-2xl bg-white border border-indigo-100 rotate-2 w-72"
           >
-            <div className="font-medium text-sm" style={{ color: 'var(--color-text-primary)' }}>
+            <div className="font-semibold text-base text-slate-800">
               {activeTask.title}
             </div>
             {activeTask.description && (
-              <div
-                className="text-xs mt-1 line-clamp-1"
-                style={{ color: 'var(--color-text-secondary)' }}
-              >
+              <div className="text-xs mt-1 text-slate-400 line-clamp-1">
                 {activeTask.description}
               </div>
             )}

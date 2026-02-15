@@ -22,7 +22,6 @@ interface TaskFormProps {
 export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFormProps) {
   const user = useAuthStore(state => state.user)
   const createTask = useTaskStore(state => state.createTask)
-  const scheduleTask = useTaskStore(state => state.scheduleTask)
 
   // Form state - pre-fill if editing existing task
   const [title, setTitle] = useState(existingTask?.title || '')
@@ -40,7 +39,7 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
   const [scheduledTime, setScheduledTime] = useState(
     existingTask?.scheduled_at?.split('T')[1]?.slice(0, 5) || '09:00'
   )
-  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>(
+  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly' | 'custom'>(
     existingTask?.is_recurring ? 'weekly' : 'none'
   )
   // Recurrence details state

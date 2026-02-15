@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { format, startOfDay } from 'date-fns'
 import { ChevronLeft, ChevronRight, Plus, Calendar } from 'lucide-react'
 import { useDroppable } from '@dnd-kit/core'
@@ -72,28 +72,6 @@ export function DayPage() {
     await scheduleTask(task.id, scheduledAt)
   }
 
-  // Swipe handlers
-  const handlePointerDown = (e: React.PointerEvent) => {
-    startXRef.current = e.clientX
-    setIsDragging(true)
-  }
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isDragging) return
-    setIsDragging(false)
-
-    const deltaX = e.clientX - startXRef.current
-    const SWIPE_THRESHOLD = 50
-
-    if (deltaX > SWIPE_THRESHOLD) {
-      // Swipe right → previous day
-      goToPreviousDay()
-    } else if (deltaX < -SWIPE_THRESHOLD) {
-      // Swipe left → next day
-      goToNextDay()
-    }
-  }
-
   return (
     <>
       <AppShell
@@ -152,8 +130,6 @@ export function DayPage() {
       >
         <div
           className="min-h-full"
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
           style={{ touchAction: 'pan-y' }}
         >
           {/* Agenda Section */}

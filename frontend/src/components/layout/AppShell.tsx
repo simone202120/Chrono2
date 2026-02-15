@@ -11,7 +11,6 @@ import {
 } from '@dnd-kit/core'
 import { BottomNav } from './BottomNav'
 import type { Task } from '@/types/task'
-import { cn } from '@/lib/utils'
 
 interface AppShellProps {
   children: ReactNode

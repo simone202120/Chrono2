@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Calendar, LayoutGrid, ListTodo, Plus } from 'lucide-react'
+import { Calendar, LayoutGrid, ListTodo } from 'lucide-react'
 import { useCalendar } from '@/hooks/useCalendar'
 import { cn } from '@/lib/utils'
 
@@ -13,9 +13,9 @@ export function BottomNav() {
   const { goToToday } = useCalendar()
 
   const tabs = [
-    { to: '/', icon: Calendar, label: 'Oggi', onClick: goToToday },
-    { to: '/settimana', icon: LayoutGrid, label: 'Settimana' },
-    { to: '/backlog', icon: ListTodo, label: 'Backlog' },
+    { to: '/', icon: Calendar, onClick: goToToday },
+    { to: '/settimana', icon: LayoutGrid },
+    { to: '/backlog', icon: ListTodo },
   ]
 
   return (
@@ -26,7 +26,7 @@ export function BottomNav() {
           boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
         }}
       >
-        {tabs.map(({ to, icon: Icon, label, onClick }) => (
+        {tabs.map(({ to, icon: Icon, onClick }) => (
           <NavLink
             key={to}
             to={to}

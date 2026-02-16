@@ -63,10 +63,14 @@ export const useAuthStore = create<AuthStore>(set => ({
 
   signIn: async (email: string) => {
     try {
+      // Use env variable if set, otherwise fallback to current origin
+      // VITE_APP_URL should be set to production URL on Vercel
+      const redirectUrl = import.meta.env.VITE_APP_URL || window.location.origin
+
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: redirectUrl,
         },
       })
 

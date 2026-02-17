@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react'
 import { format, startOfDay } from 'date-fns'
-import { it } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight, Plus, Sparkles, CheckCircle2 } from 'lucide-react'
 import { useDroppable } from '@dnd-kit/core'
 import { AppShell } from '@/components/layout/AppShell'

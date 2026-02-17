@@ -1,44 +1,47 @@
 import { useState, useMemo } from 'react'
 import { format, startOfDay } from 'date-fns'
-import { ChevronLeft, ChevronRight, Plus, Calendar } from 'lucide-react'
+import { it } from 'date-fns/locale'
+import { ChevronLeft, ChevronRight, Plus, Sparkles, CheckCircle2 } from 'lucide-react'
 import { useDroppable } from '@dnd-kit/core'
 import { AppShell } from '@/components/layout/AppShell'
 import { SwipeableTaskCard } from '@/components/task/SwipeableTaskCard'
 import { TaskForm } from '@/components/task/TaskForm'
-import { BacklogPanel } from '@/components/backlog/BacklogPanel'
 import { useTaskStore } from '@/store/taskStore'
 import { useCalendar } from '@/hooks/useCalendar'
 import type { Task } from '@/types/task'
 import { cn } from '@/lib/utils'
 
 /**
- * DayPage - Main day view page
- * - Header with date navigation (← →) and add button (+)
- * - Agenda section: tasks scheduled for selected day
- * - Total weight badge with color coding
- * - Backlog section below
- * - Horizontal swipe to navigate between days
+ * DayPage - Main day view
+ * - Clean date navigation header
+ * - Day summary (task count, weight, completion)
+ * - Agenda: scheduled tasks for the day
+ * - FAB for quick add
+ * - No embedded BacklogPanel (use dedicated Backlog tab)
  */
 export function DayPage() {
   const tasks = useTaskStore(state => state.tasks)
   const [showForm, setShowForm] = useState(false)
+  const [showCompleted, setShowCompleted] = useState(false)
   const {
     selectedDateISO,
     goToNextDay,
     goToPreviousDay,
     goToToday,
     isToday,
-    dateLabel,
     headerDateLabel,
   } = useCalendar()
 
-  // Drop zone for the day
-  const { setNodeRef, isOver } = useDroppable({
-    id: selectedDateISO,
-  })
+  const { setNodeRef, isOver } = useDroppable({ id: selectedDateISO })
 
-  // Get tasks for selected date
-  const dayTasks = useMemo(() => {
+  const scheduleTask = useTaskStore(state => state.scheduleTask)
+
+  const handleTaskDrop = async (task: Task, dateString: string) => {
+    await scheduleTask(task.id, `${dateString}T09:00:00`)
+  }
+
+  // Tasks for selected date
+  const allDayTasks = useMemo(() => {
     return tasks
       .filter(task => {
         if (!task.scheduled_at) return false
@@ -51,26 +54,31 @@ export function DayPage() {
       })
   }, [tasks, selectedDateISO])
 
-  // Calculate total weight for the day
-  const totalWeight = useMemo(() => {
-    return dayTasks.reduce((sum, task) => sum + task.weight, 0)
-  }, [dayTasks])
+  const activeTasks = useMemo(() => allDayTasks.filter(t => t.status !== 'done'), [allDayTasks])
+  const completedTasks = useMemo(() => allDayTasks.filter(t => t.status === 'done'), [allDayTasks])
 
-  // Weight badge color
-  const weightColor = useMemo(() => {
-    if (totalWeight < 5) return 'var(--color-success)' // Green
-    if (totalWeight < 10) return 'var(--color-warning)' // Yellow
-    return 'var(--color-destructive)' // Red
-  }, [totalWeight])
+  const totalWeight = useMemo(
+    () => activeTasks.reduce((sum, t) => sum + t.weight, 0),
+    [activeTasks]
+  )
+  const completionRate = allDayTasks.length > 0
+    ? Math.round((completedTasks.length / allDayTasks.length) * 100)
+    : 0
 
-  const scheduleTask = useTaskStore(state => state.scheduleTask)
+  // Header date: capitalize first letter
+  const headerLabel = useMemo(() => {
+    const raw = headerDateLabel
+    return raw.charAt(0).toUpperCase() + raw.slice(1)
+  }, [headerDateLabel])
 
-  // Drag & drop handlers
-  const handleTaskDrop = async (task: Task, dateString: string) => {
-    // Direct schedule to 09:00 of the target day
-    const scheduledAt = `${dateString}T09:00:00`
-    await scheduleTask(task.id, scheduledAt)
-  }
+  // Summary weight color
+  const weightColor = totalWeight === 0
+    ? 'var(--color-success)'
+    : totalWeight < 5
+      ? 'var(--color-success)'
+      : totalWeight < 10
+        ? 'var(--color-warning)'
+        : 'var(--color-destructive)'
 
   return (
     <>
@@ -78,141 +86,175 @@ export function DayPage() {
         onTaskDrop={handleTaskDrop}
         title={
           <span
-            className="text-base font-semibold capitalize"
+            className="text-base font-bold capitalize tracking-tight"
             style={{ color: isToday ? 'var(--color-primary)' : 'var(--color-text-primary)' }}
           >
-            {headerDateLabel}
+            {headerLabel}
           </span>
         }
         headerLeftAction={
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0">
             <button
               onClick={goToPreviousDay}
-              className="p-2 -ml-2"
+              className="p-2 rounded-xl active:bg-slate-100 transition-colors"
               style={{ color: 'var(--color-text-secondary)' }}
               aria-label="Giorno precedente"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={22} strokeWidth={2.5} />
             </button>
             <button
               onClick={goToNextDay}
-              className="p-2"
+              className="p-2 rounded-xl active:bg-slate-100 transition-colors"
               style={{ color: 'var(--color-text-secondary)' }}
               aria-label="Giorno successivo"
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={22} strokeWidth={2.5} />
             </button>
             {!isToday && (
               <button
                 onClick={goToToday}
-                className="ml-1 px-3 py-1 text-xs font-semibold rounded-full"
-                style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white',
-                }}
-                aria-label="Vai a oggi"
+                className="ml-1 px-3 py-1.5 text-xs font-bold rounded-xl transition-all active:scale-95"
+                style={{ backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)' }}
               >
                 Oggi
               </button>
             )}
           </div>
         }
-        headerAction={
-          <button
-            onClick={() => setShowForm(true)}
-            className="p-2 -mr-2"
-            style={{ color: 'var(--color-primary)' }}
-            aria-label="Aggiungi impegno"
-          >
-            <Plus size={24} strokeWidth={2} />
-          </button>
-        }
       >
-        <div
-          className="min-h-full"
-          style={{ touchAction: 'pan-y' }}
-        >
+        <div className="min-h-full pb-32" style={{ touchAction: 'pan-y' }}>
+
+          {/* Day Summary Card */}
+          {allDayTasks.length > 0 && (
+            <div
+              className="mx-4 mt-3 mb-4 p-4 rounded-2xl flex items-center gap-4 animate-fade-in"
+              style={{ backgroundColor: 'var(--color-primary-light)' }}
+            >
+              <div className="flex-1">
+                <div className="text-xs font-semibold uppercase tracking-wide mb-1"
+                  style={{ color: 'var(--color-primary)' }}>
+                  {isToday ? 'Oggi in agenda' : 'In agenda'}
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl font-bold" style={{ color: 'var(--color-primary-dark)' }}>
+                    {activeTasks.length}
+                  </span>
+                  <span className="text-xs" style={{ color: 'var(--color-primary)' }}>
+                    {activeTasks.length === 1 ? 'impegno' : 'impegni'}
+                  </span>
+                  {completedTasks.length > 0 && (
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                      {completionRate}% ✓
+                    </span>
+                  )}
+                </div>
+              </div>
+              {totalWeight > 0 && (
+                <div
+                  className="flex flex-col items-center justify-center w-14 h-14 rounded-xl font-bold text-white text-lg shadow-sm"
+                  style={{ backgroundColor: weightColor }}
+                >
+                  {totalWeight}
+                  <span className="text-[9px] font-medium opacity-80">peso</span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Agenda Section */}
           <div
             ref={setNodeRef}
             className={cn(
-              "p-4 transition-colors duration-200 rounded-3xl mx-2 mt-2",
-              isOver ? "bg-indigo-50/50 ring-2 ring-indigo-500 ring-offset-2" : ""
+              'mx-4 transition-all duration-200 rounded-2xl',
+              isOver && 'ring-2 ring-indigo-500 ring-offset-2 bg-indigo-50/30'
             )}
           >
-            {/* Section Header */}
-            <div className="flex items-center justify-between mb-3">
-              <h2
-                className="text-sm font-semibold uppercase tracking-wide"
-                style={{ color: 'var(--color-text-secondary)' }}
-              >
-                {dateLabel}
-              </h2>
-              {dayTasks.length > 0 && (
-                <span
-                  className="text-xs font-medium px-2 py-1 rounded-full"
-                  style={{
-                    color: 'white',
-                    backgroundColor: weightColor,
-                  }}
-                >
-                  Peso totale: {totalWeight}
-                </span>
-              )}
-            </div>
-
-            {/* Task List */}
-            {dayTasks.length > 0 ? (
-              <div className="space-y-2">
-                {dayTasks.map(task => (
-                  <SwipeableTaskCard key={task.id} task={task} />
+            {/* Active Tasks */}
+            {activeTasks.length > 0 ? (
+              <div className="space-y-2.5">
+                {activeTasks.map((task, index) => (
+                  <div
+                    key={task.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 40}ms`, animationFillMode: 'both' }}
+                  >
+                    <SwipeableTaskCard task={task} />
+                  </div>
                 ))}
               </div>
             ) : (
               /* Empty State */
-              <div
-                className="flex flex-col items-center justify-center py-12 px-6 rounded-xl"
-                style={{ backgroundColor: 'var(--color-background-section)' }}
-              >
-                <Calendar
-                  size={48}
-                  strokeWidth={1.5}
-                  style={{ color: 'var(--color-text-tertiary)' }}
-                  className="mb-3"
-                />
-                <p
-                  className="text-sm text-center mb-4"
-                  style={{ color: 'var(--color-text-secondary)' }}
+              <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                <div
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4 animate-bounce-in"
+                  style={{ backgroundColor: 'var(--color-primary-light)' }}
                 >
-                  Nessun impegno.
-                  <br />
-                  Trascina dal backlog o aggiungi +
+                  <Sparkles size={36} style={{ color: 'var(--color-primary)' }} />
+                </div>
+                <p className="font-semibold text-slate-700 mb-1">
+                  {isToday ? 'Nessun impegno per oggi' : 'Nessun impegno'}
+                </p>
+                <p className="text-sm text-slate-400 mb-6 max-w-[220px]">
+                  {isToday
+                    ? 'Inizia aggiungendo qualcosa o trascina dal backlog'
+                    : 'Questo giorno è libero. Aggiungi un impegno o trascina dal backlog'}
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="px-4 py-2 text-sm font-medium rounded-full text-white"
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white active:scale-95 transition-all"
                   style={{ backgroundColor: 'var(--color-primary)' }}
                 >
-                  Aggiungi impegno
+                  + Aggiungi impegno
                 </button>
               </div>
             )}
-          </div>
 
-          {/* Backlog Section */}
-          <div className="mt-6 px-4 pb-24">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400 mb-3 px-2">
-              Backlog
-            </h2>
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-              <BacklogPanel onAddTask={() => setShowForm(true)} />
-            </div>
+            {/* Completed tasks collapsible section */}
+            {completedTasks.length > 0 && (
+              <div className="mt-4">
+                <button
+                  onClick={() => setShowCompleted(p => !p)}
+                  className="w-full flex items-center gap-2 px-1 py-2 text-xs font-semibold uppercase tracking-wide transition-colors active:opacity-70"
+                  style={{ color: 'var(--color-text-tertiary)' }}
+                >
+                  <CheckCircle2 size={14} className="text-emerald-400" />
+                  Completati ({completedTasks.length})
+                  <span className="ml-auto text-slate-300">
+                    {showCompleted ? '▲' : '▼'}
+                  </span>
+                </button>
+                {showCompleted && (
+                  <div className="space-y-2 mt-1">
+                    {completedTasks.map(task => (
+                      <SwipeableTaskCard key={task.id} task={task} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
+
+        {/* FAB */}
+        <button
+          onClick={() => setShowForm(true)}
+          className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center z-20 active:scale-95 transition-all duration-150 animate-bounce-in"
+          style={{
+            backgroundColor: 'var(--color-primary)',
+            boxShadow: 'var(--shadow-fab)',
+          }}
+          aria-label="Aggiungi impegno"
+        >
+          <Plus size={28} strokeWidth={2.5} color="white" />
+        </button>
       </AppShell>
 
-      {/* Task Form Modal */}
-      {showForm && <TaskForm onClose={() => setShowForm(false)} />}
+      {showForm && (
+        <TaskForm
+          onClose={() => setShowForm(false)}
+          initialScheduledDate={selectedDateISO}
+        />
+      )}
     </>
   )
 }

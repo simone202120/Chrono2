@@ -165,25 +165,30 @@ export function BacklogPage() {
     <>
       <AppShell
         title={
-          <span className="text-base font-semibold">
-            Backlog ({totalBacklogCount})
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-base font-bold text-slate-900">Backlog</span>
+            {totalBacklogCount > 0 && (
+              <span
+                className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
+                style={{ backgroundColor: 'var(--color-primary)' }}
+              >
+                {totalBacklogCount}
+              </span>
+            )}
+          </div>
         }
         headerAction={
           <button
             onClick={() => setShowFilters(true)}
-            className="p-2 -mr-2 relative"
-            style={{ color: 'var(--color-text-secondary)' }}
+            className="relative p-2 rounded-xl active:bg-slate-100 transition-colors"
+            style={{ color: activeFiltersCount > 0 ? 'var(--color-primary)' : 'var(--color-text-secondary)' }}
             aria-label="Filtri"
           >
             <SlidersHorizontal size={20} />
             {activeFiltersCount > 0 && (
               <span
-                className="absolute top-0 right-0 w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-semibold"
-                style={{
-                  backgroundColor: 'var(--color-destructive)',
-                  color: 'white',
-                }}
+                className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[9px] flex items-center justify-center font-bold text-white"
+                style={{ backgroundColor: 'var(--color-destructive)' }}
               >
                 {activeFiltersCount}
               </span>
@@ -191,124 +196,144 @@ export function BacklogPage() {
           </button>
         }
       >
-        <div ref={scrollContainerRef} className="h-full overflow-y-auto pb-24">
+        <div ref={scrollContainerRef} className="h-full overflow-y-auto">
+
           {/* Search Bar */}
-          <div className="p-4 pb-2">
-            <div
-              className="flex items-center gap-2 px-3 py-2 rounded-xl"
-              style={{ backgroundColor: 'var(--color-background-section)' }}
-            >
-              <Search
-                size={18}
-                style={{ color: 'var(--color-text-tertiary)' }}
-              />
+          <div className="px-4 pt-3 pb-2">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl" style={{ backgroundColor: 'var(--color-background-section)' }}>
+              <Search size={17} style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Cerca impegni..."
-                className="flex-1 bg-transparent border-none outline-none text-sm"
+                className="flex-1 bg-transparent border-none outline-none text-sm font-medium"
                 style={{ color: 'var(--color-text-primary)' }}
               />
+              {searchQuery.length > 0 && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="text-slate-400 text-xs font-semibold"
+                >
+                  ✕
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Current Sort Badge */}
-          <div className="px-4 pb-3">
-            <span
-              className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full"
+          {/* Sort + Filter chips row */}
+          <div className="px-4 pb-3 flex items-center gap-2">
+            <button
+              onClick={() => setShowFilters(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95"
               style={{
                 backgroundColor: 'var(--color-background-section)',
                 color: 'var(--color-text-secondary)',
               }}
             >
-              {getSortLabel(filters.sortBy)}
-            </span>
+              ↕ {getSortLabel(filters.sortBy)}
+            </button>
+            {activeFiltersCount > 0 && (
+              <span
+                className="px-3 py-1.5 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)' }}
+              >
+                {activeFiltersCount} filtri attivi
+              </span>
+            )}
           </div>
 
           {/* Due Soon Section */}
           {dueSoonTasks.length > 0 && (
-            <div className="px-4 mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertCircle
-                  size={18}
-                  style={{ color: 'var(--color-destructive)' }}
-                />
-                <h2
-                  className="text-sm font-semibold uppercase tracking-wide"
-                  style={{ color: 'var(--color-destructive)' }}
-                >
-                  In scadenza ({dueSoonTasks.length})
-                </h2>
-              </div>
-              <div className="space-y-2">
-                {dueSoonTasks.map(task => (
-                  <div key={task.id} className="relative">
-                    <BacklogItem task={task} onTap={setSelectedTask} />
-                    {task.due_date && (
-                      <div
-                        className="absolute top-2 right-2 px-2 py-0.5 text-xs font-medium rounded-full"
-                        style={{
-                          backgroundColor: 'var(--color-destructive)',
-                          color: 'white',
-                        }}
-                      >
-                        {getDaysUntilDue(task.due_date)}
-                      </div>
-                    )}
-                  </div>
-                ))}
+            <div className="px-4 mb-5">
+              <div
+                className="p-4 rounded-2xl"
+                style={{ backgroundColor: '#fff5f5', border: '1px solid #fecaca' }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertCircle size={16} className="text-red-500 flex-shrink-0" />
+                  <h2 className="text-sm font-bold text-red-600 uppercase tracking-wide">
+                    In scadenza · {dueSoonTasks.length}
+                  </h2>
+                </div>
+                <div className="space-y-2">
+                  {dueSoonTasks.map(task => (
+                    <div key={task.id} className="relative">
+                      <BacklogItem task={task} onTap={setSelectedTask} />
+                      {task.due_date && (
+                        <div
+                          className="absolute top-2.5 right-3 px-2 py-0.5 text-[10px] font-bold rounded-full text-white"
+                          style={{ backgroundColor: 'var(--color-destructive)' }}
+                        >
+                          {getDaysUntilDue(task.due_date)}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
 
-          {/* Backlog Section */}
-          <div className="px-4">
-            <h2
-              className="text-xs font-semibold uppercase tracking-wide mb-3"
-              style={{ color: 'var(--color-text-secondary)' }}
-            >
-              Tutti ({filteredBacklog.length})
-            </h2>
+          {/* All Backlog */}
+          <div className="px-4 pb-32">
             {filteredBacklog.length > 0 ? (
-              <div className="space-y-2">
-                {filteredBacklog.map(task => (
-                  <BacklogItem key={task.id} task={task} onTap={setSelectedTask} />
-                ))}
-              </div>
+              <>
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
+                  Tutti · {filteredBacklog.length}
+                </p>
+                <div className="space-y-2.5">
+                  {filteredBacklog.map((task, index) => (
+                    <div
+                      key={task.id}
+                      className="animate-fade-in"
+                      style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'both' }}
+                    >
+                      <BacklogItem task={task} onTap={setSelectedTask} />
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
-              <div className="text-center py-12">
-                <p
-                  className="text-sm"
-                  style={{ color: 'var(--color-text-tertiary)' }}
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4"
+                  style={{ backgroundColor: 'var(--color-background-section)' }}
                 >
+                  <span className="text-4xl">{searchQuery ? '🔍' : '📋'}</span>
+                </div>
+                <p className="font-semibold text-slate-700 mb-1">
+                  {searchQuery ? 'Nessun risultato' : 'Backlog vuoto'}
+                </p>
+                <p className="text-sm text-slate-400 max-w-[200px]">
                   {searchQuery
-                    ? 'Nessun risultato trovato'
-                    : 'Nessun impegno in backlog'}
+                    ? `Nessun impegno corrisponde a "${searchQuery}"`
+                    : 'Aggiungi impegni da pianificare in futuro'}
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* FAB (Floating Action Button) */}
+        {/* FAB */}
         <button
           onClick={() => setShowForm(true)}
           className={cn(
-            'fixed bottom-20 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-20',
-            showFAB ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+            'fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center z-20 transition-all duration-300',
+            showFAB ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-90'
           )}
-          style={{ backgroundColor: 'var(--color-primary)' }}
+          style={{
+            backgroundColor: 'var(--color-primary)',
+            boxShadow: 'var(--shadow-fab)',
+          }}
           aria-label="Aggiungi impegno"
         >
           <Plus size={28} strokeWidth={2.5} color="white" />
         </button>
       </AppShell>
 
-      {/* Task Form Modal */}
       {showForm && <TaskForm onClose={() => setShowForm(false)} />}
 
-      {/* Filters Modal */}
       {showFilters && (
         <BacklogFilters
           currentFilters={filters}
@@ -317,7 +342,6 @@ export function BacklogPage() {
         />
       )}
 
-      {/* Task Detail Modal */}
       {selectedTask && (
         <TaskDetail task={selectedTask} onClose={() => setSelectedTask(null)} />
       )}

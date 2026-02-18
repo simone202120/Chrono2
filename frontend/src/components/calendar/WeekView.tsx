@@ -35,13 +35,7 @@ export function WeekView({ weekDates, tasks, onDayPress }: WeekViewProps) {
   }, [tasks])
 
   return (
-    <div
-      className="rounded-xl p-3"
-      style={{
-        backgroundColor: 'var(--color-background-card)',
-        border: '1px solid var(--color-separator)',
-      }}
-    >
+    <div className="p-3" style={{ backgroundColor: 'var(--color-background-card)' }}>
       <div className="flex gap-1">
         {weekDates.map(date => {
           const dateKey = format(startOfDay(date), 'yyyy-MM-dd')

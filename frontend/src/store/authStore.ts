@@ -12,6 +12,7 @@ interface AuthState {
 interface AuthActions {
   initialize: () => Promise<void>
   signIn: (email: string) => Promise<{ error: Error | null }>
+  signInWithGoogle: () => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
   setUser: (user: User | null) => void
   setSession: (session: Session | null) => void
@@ -21,7 +22,7 @@ type AuthStore = AuthState & AuthActions
 
 /**
  * Auth Store - Manages authentication state with Supabase
- * - Handles magic link sign in/out
+ * - Handles Google OAuth and magic link sign in/out
  * - Auto-initializes on mount with session persistence
  * - Listens to auth state changes
  */
@@ -63,10 +64,14 @@ export const useAuthStore = create<AuthStore>(set => ({
 
   signIn: async (email: string) => {
     try {
+      // Use env variable if set, otherwise fallback to current origin
+      // VITE_APP_URL should be set to production URL on Vercel
+      const redirectUrl = import.meta.env.VITE_APP_URL || window.location.origin
+
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: redirectUrl,
         },
       })
 
@@ -75,6 +80,27 @@ export const useAuthStore = create<AuthStore>(set => ({
       return { error: null }
     } catch (error) {
       console.error('Error signing in:', error)
+      return { error: error as Error }
+    }
+  },
+
+  signInWithGoogle: async () => {
+    try {
+      // Use env variable if set, otherwise fallback to current origin
+      const redirectUrl = import.meta.env.VITE_APP_URL || window.location.origin
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+        },
+      })
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error signing in with Google:', error)
       return { error: error as Error }
     }
   },

@@ -20,7 +20,7 @@ export function WeekPage() {
   const scheduleTask = useTaskStore(state => state.scheduleTask)
   const tasks = useTaskStore(state => state.tasks)
   const [showForm, setShowForm] = useState(false)
-  const { weekRangeLabel, goToNextWeek, goToPreviousWeek, setSelectedDate } = useCalendar()
+  const { weekRangeLabel, weekDates, goToNextWeek, goToPreviousWeek, setSelectedDate } = useCalendar()
 
   const handleDayPress = (date: Date) => {
     setSelectedDate(date)
@@ -81,6 +81,7 @@ export function WeekPage() {
             }}
           >
             <WeekView
+              weekDates={weekDates}
               tasks={tasks.filter(t => t.scheduled_at !== null)}
               onDayPress={handleDayPress}
             />

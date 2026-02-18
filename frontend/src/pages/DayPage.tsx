@@ -10,7 +10,7 @@ import { BacklogPanel } from '@/components/backlog/BacklogPanel'
 import { useTaskStore } from '@/store/taskStore'
 import { useCalendar } from '@/hooks/useCalendar'
 import type { Task } from '@/types/task'
-import { getWeightColor } from '@/lib/utils'
+
 
 /**
  * DayPage - Revolut Modern Style

@@ -46,7 +46,7 @@ export function BottomNav() {
           border: '1px solid var(--border-default)',
         }}
       >
-        {tabs.map(({ to, icon: Icon, label }, index) => (
+        {tabs.map(({ to, icon: Icon }, index) => (
           <NavLink
             key={to}
             to={to}

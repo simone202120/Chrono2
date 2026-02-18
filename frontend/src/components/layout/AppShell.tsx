@@ -18,6 +18,7 @@ interface AppShellProps {
   children: ReactNode
   title?: ReactNode
   headerAction?: ReactNode
+  headerLeftAction?: ReactNode
   showThemeToggle?: boolean
   onTaskDrop?: (task: Task, dateString: string) => void
 }
@@ -33,6 +34,7 @@ export function AppShell({
   children,
   title,
   headerAction,
+  headerLeftAction,
   showThemeToggle = true,
   onTaskDrop,
 }: AppShellProps) {
@@ -85,9 +87,9 @@ export function AppShell({
             borderBottom: '1px solid var(--border-subtle)',
           }}
         >
-          {/* Left - Theme Toggle */}
+          {/* Left - Theme Toggle or Custom Action */}
           <div className="flex-1 flex justify-start">
-            {showThemeToggle && <ThemeToggle />}
+            {headerLeftAction || (showThemeToggle && <ThemeToggle />)}
           </div>
           
           {/* Center - Title */}

@@ -70,14 +70,6 @@ export function DayPage() {
     return raw.charAt(0).toUpperCase() + raw.slice(1)
   }, [headerDateLabel])
 
-  // Summary weight color
-  const weightColor = totalWeight === 0
-    ? 'var(--color-success)'
-    : totalWeight < 5
-      ? 'var(--color-success)'
-      : totalWeight < 10
-        ? 'var(--color-warning)'
-        : 'var(--color-destructive)'
 
   return (
     <>
@@ -126,35 +118,58 @@ export function DayPage() {
           {/* Day Summary Card */}
           {allDayTasks.length > 0 && (
             <div
-              className="mx-4 mt-3 mb-4 p-4 rounded-2xl flex items-center gap-4 animate-fade-in"
-              style={{ backgroundColor: 'var(--color-primary-light)' }}
+              className="mx-4 mt-3 mb-4 p-4 rounded-2xl flex items-center gap-4 animate-fade-in overflow-hidden relative"
+              style={{
+                background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+              }}
             >
-              <div className="flex-1">
-                <div className="text-xs font-semibold uppercase tracking-wide mb-1"
-                  style={{ color: 'var(--color-primary)' }}>
+              {/* Decorative circle */}
+              <div
+                className="absolute -right-6 -top-6 w-28 h-28 rounded-full opacity-10"
+                style={{ backgroundColor: 'white' }}
+              />
+              <div
+                className="absolute -right-1 -bottom-4 w-16 h-16 rounded-full opacity-10"
+                style={{ backgroundColor: 'white' }}
+              />
+
+              <div className="flex-1 relative z-10">
+                <div className="text-[10px] font-bold uppercase tracking-widest mb-1 text-white/60">
                   {isToday ? 'Oggi in agenda' : 'In agenda'}
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl font-bold" style={{ color: 'var(--color-primary-dark)' }}>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-white">
                     {activeTasks.length}
                   </span>
-                  <span className="text-xs" style={{ color: 'var(--color-primary)' }}>
+                  <span className="text-sm text-white/70 font-medium">
                     {activeTasks.length === 1 ? 'impegno' : 'impegni'}
                   </span>
-                  {completedTasks.length > 0 && (
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
-                      {completionRate}% ✓
-                    </span>
-                  )}
                 </div>
+                {completedTasks.length > 0 && (
+                  <div className="mt-1.5 flex items-center gap-1.5">
+                    <div className="h-1 flex-1 rounded-full bg-white/20 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-white/80 transition-all duration-500"
+                        style={{ width: `${completionRate}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] font-bold text-white/70">
+                      {completionRate}%
+                    </span>
+                  </div>
+                )}
               </div>
               {totalWeight > 0 && (
                 <div
-                  className="flex flex-col items-center justify-center w-14 h-14 rounded-xl font-bold text-white text-lg shadow-sm"
-                  style={{ backgroundColor: weightColor }}
+                  className="relative z-10 flex flex-col items-center justify-center w-14 h-14 rounded-xl font-bold text-lg shadow-sm"
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.18)',
+                    color: 'white',
+                    backdropFilter: 'blur(4px)',
+                  }}
                 >
                   {totalWeight}
-                  <span className="text-[9px] font-medium opacity-80">peso</span>
+                  <span className="text-[9px] font-medium opacity-70">peso</span>
                 </div>
               )}
             </div>
@@ -186,22 +201,27 @@ export function DayPage() {
               <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
                 <div
                   className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4 animate-bounce-in"
-                  style={{ backgroundColor: 'var(--color-primary-light)' }}
+                  style={{
+                    background: 'linear-gradient(135deg, var(--color-primary-light) 0%, #e0e7ff 100%)',
+                  }}
                 >
-                  <Sparkles size={36} style={{ color: 'var(--color-primary)' }} />
+                  <Sparkles size={34} style={{ color: 'var(--color-primary)' }} />
                 </div>
-                <p className="font-semibold text-slate-700 mb-1">
-                  {isToday ? 'Nessun impegno per oggi' : 'Nessun impegno'}
+                <p className="font-bold text-slate-800 mb-1.5 text-base">
+                  {isToday ? 'Giornata libera 🎉' : 'Nessun impegno'}
                 </p>
-                <p className="text-sm text-slate-400 mb-6 max-w-[220px]">
+                <p className="text-sm text-slate-400 mb-6 max-w-[220px] leading-relaxed">
                   {isToday
-                    ? 'Inizia aggiungendo qualcosa o trascina dal backlog'
-                    : 'Questo giorno è libero. Aggiungi un impegno o trascina dal backlog'}
+                    ? 'Aggiungi qualcosa o pianifica dal backlog'
+                    : 'Questo giorno è libero'}
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white active:scale-95 transition-all"
-                  style={{ backgroundColor: 'var(--color-primary)' }}
+                  className="px-6 py-3 rounded-xl text-sm font-bold text-white active:scale-95 transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+                    boxShadow: '0 4px 14px -2px rgba(99,102,241,0.4)',
+                  }}
                 >
                   + Aggiungi impegno
                 </button>
@@ -237,14 +257,15 @@ export function DayPage() {
         {/* FAB */}
         <button
           onClick={() => setShowForm(true)}
-          className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center z-20 active:scale-95 transition-all duration-150 animate-bounce-in"
+          className="fixed bottom-24 right-4 flex items-center gap-2 px-4 h-14 rounded-2xl z-20 active:scale-95 transition-all duration-150 animate-bounce-in"
           style={{
-            backgroundColor: 'var(--color-primary)',
+            background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
             boxShadow: 'var(--shadow-fab)',
           }}
           aria-label="Aggiungi impegno"
         >
-          <Plus size={28} strokeWidth={2.5} color="white" />
+          <Plus size={22} strokeWidth={2.5} color="white" />
+          <span className="text-white font-bold text-sm pr-1">Nuovo</span>
         </button>
       </AppShell>
 

@@ -28,14 +28,14 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       className={cn(
         'w-full rounded-2xl border text-left cursor-pointer select-none overflow-hidden transition-all duration-150 active:scale-[0.98]',
         isCompleted
-          ? 'bg-slate-50 border-slate-100 opacity-70'
+          ? 'bg-slate-50 border-slate-100 opacity-65'
           : 'bg-white border-slate-100 shadow-sm active:shadow-none'
       )}
     >
       <div className="flex items-stretch">
-        {/* Weight color bar */}
+        {/* Weight color bar — più spessa per più impatto visivo */}
         <div
-          className="w-1 flex-shrink-0 rounded-l-2xl"
+          className="w-[3px] flex-shrink-0 rounded-l-2xl"
           style={{
             backgroundColor: isCompleted ? 'var(--color-text-tertiary)' : `var(--color-weight-${task.weight})`,
           }}
@@ -77,11 +77,11 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
             </p>
           )}
 
-          {/* Footer: time + due date */}
+          {/* Footer: time + due date + weight */}
           <div className="flex items-center gap-3 mt-2.5">
             {task.scheduled_at && (
-              <div className="flex items-center gap-1 text-xs font-medium text-slate-500">
-                <Clock size={12} />
+              <div className="flex items-center gap-1 text-xs font-medium text-slate-400">
+                <Clock size={11} />
                 <span>{format(new Date(task.scheduled_at), 'HH:mm')}</span>
               </div>
             )}
@@ -90,7 +90,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
                 'flex items-center gap-1 text-xs font-medium',
                 isDueSoon && !isCompleted ? 'text-red-500' : 'text-slate-400'
               )}>
-                <Calendar size={12} />
+                <Calendar size={11} />
                 <span>{format(new Date(task.due_date), 'd MMM', { locale: it })}</span>
               </div>
             )}
@@ -98,7 +98,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
             <div
               className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full"
               style={{
-                backgroundColor: isCompleted ? 'var(--color-background-section)' : `var(--color-weight-${task.weight})20`,
+                backgroundColor: isCompleted ? 'var(--color-background-section)' : `var(--color-weight-${task.weight})18`,
                 color: isCompleted ? 'var(--color-text-tertiary)' : `var(--color-weight-${task.weight})`,
               }}
             >

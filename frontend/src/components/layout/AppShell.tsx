@@ -121,16 +121,29 @@ export function AppShell({
       <DragOverlay dropAnimation={null}>
         {activeTask ? (
           <div
-            className="rounded-2xl p-4 shadow-2xl bg-white border border-indigo-100 rotate-2 w-72"
+            className="rounded-2xl p-4 shadow-2xl rotate-2 w-72 border border-indigo-100/50"
+            style={{
+              background: 'linear-gradient(135deg, white 0%, #f0f1ff 100%)',
+              boxShadow: '0 20px 40px -8px rgba(99,102,241,0.3), 0 8px 16px -4px rgba(0,0,0,0.08)',
+            }}
           >
-            <div className="font-semibold text-base text-slate-800">
-              {activeTask.title}
+            <div className="flex items-center gap-2">
+              <div
+                className="w-2 h-2 rounded-full flex-shrink-0"
+                style={{ backgroundColor: `var(--color-weight-${activeTask.weight})` }}
+              />
+              <div className="font-bold text-sm text-slate-800 line-clamp-1">
+                {activeTask.title}
+              </div>
             </div>
             {activeTask.description && (
-              <div className="text-xs mt-1 text-slate-400 line-clamp-1">
+              <div className="text-xs mt-1 text-slate-400 line-clamp-1 ml-4">
                 {activeTask.description}
               </div>
             )}
+            <div className="mt-2 ml-4 text-[10px] font-bold text-indigo-400 uppercase tracking-wide">
+              Trascina nel giorno →
+            </div>
           </div>
         ) : null}
       </DragOverlay>

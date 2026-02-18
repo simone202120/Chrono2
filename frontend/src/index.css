@@ -144,4 +144,29 @@
   .animate-bounce-in {
     animation: bounce-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-background-section) 25%,
+      rgba(255,255,255,0.7) 50%,
+      var(--color-background-section) 75%
+    );
+    background-size: 200% auto;
+    animation: shimmer 1.4s linear infinite;
+  }
+
+  /* ===== Gradient utilities ===== */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  }
+
+  .gradient-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
 }

@@ -19,87 +19,72 @@ const WEIGHT_COLORS: Record<number, string> = {
 }
 
 /**
- * DayColumn - Single day in the week view (droppable)
- * - Day name + date number (today = blue pill)
- * - Task weight dots (up to 3)
- * - Total weight mini badge
- * - Highlights on drag over
+ * DayColumn — iOS Calendar-style day cell (droppable)
+ * - Abbreviazione giorno + cerchio data (oggi = filled)
+ * - Colored task bars (fino a 3) + "+N" extra
+ * - Highlight when drag-over
  */
 export function DayColumn({ date, tasks, onPress }: DayColumnProps) {
   const dateString = format(startOfDay(date), 'yyyy-MM-dd')
   const { setNodeRef, isOver } = useDroppable({ id: dateString })
 
   const isToday = isSameDay(date, new Date())
-  const dayName = format(date, 'EEEEEE', { locale: it })
+  const dayName = format(date, 'EEEEEE', { locale: it }).toUpperCase()
   const dayNumber = format(date, 'd')
 
   const activeTasks = tasks.filter(t => t.status !== 'done')
   const visibleTasks = activeTasks.slice(0, 3)
   const hiddenCount = Math.max(0, activeTasks.length - 3)
-  const totalWeight = activeTasks.reduce((sum, t) => sum + t.weight, 0)
-  const hasHeavyLoad = totalWeight >= 10
 
   return (
     <button
       ref={setNodeRef}
       onClick={() => onPress(date)}
       className={cn(
-        'flex-1 flex flex-col items-center py-3 px-0.5 min-w-0 rounded-2xl transition-all duration-200 active:scale-95',
-        isOver ? 'bg-indigo-50 ring-2 ring-indigo-400 ring-offset-1' : 'hover:bg-slate-50'
+        'flex-1 flex flex-col items-center py-3 px-0.5 min-w-0 rounded-xl transition-all duration-200 active:scale-95',
+        isOver ? 'bg-indigo-50 ring-2 ring-indigo-400 ring-inset' : 'active:bg-black/5'
       )}
-      style={{ minWidth: '36px' }}
     >
-      {/* Day name */}
-      <div
-        className="text-[10px] font-semibold mb-1.5 uppercase tracking-wide"
+      {/* Abbreviazione giorno */}
+      <span
+        className="text-[10px] font-semibold uppercase tracking-wide mb-1.5"
         style={{ color: isToday ? 'var(--color-primary)' : 'var(--color-text-tertiary)' }}
       >
         {dayName}
-      </div>
+      </span>
 
-      {/* Date number */}
+      {/* Cerchio data — iOS Calendar style */}
       <div
-        className="w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold mb-2 transition-all"
+        className="w-9 h-9 flex items-center justify-center rounded-full text-[15px] font-bold mb-2"
         style={{
-          backgroundColor: isToday ? 'var(--color-primary)' : 'transparent',
-          color: isToday ? 'white' : hasHeavyLoad ? 'var(--color-destructive)' : 'var(--color-text-primary)',
+          background: isToday
+            ? 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)'
+            : 'transparent',
+          color: isToday ? '#ffffff' : 'var(--color-text-primary)',
         }}
       >
         {dayNumber}
       </div>
 
-      {/* Task dots */}
-      <div className="flex flex-col items-center gap-1 min-h-[36px] justify-start">
+      {/* Barre task colorate */}
+      <div className="w-full flex flex-col items-center gap-1 min-h-[28px] justify-start px-1">
         {visibleTasks.map((task, idx) => (
           <div
             key={task.id || idx}
-            className="w-1.5 h-1.5 rounded-full"
+            className="w-full h-[3px] rounded-full opacity-85"
             style={{ backgroundColor: WEIGHT_COLORS[task.weight] }}
             title={task.title}
           />
         ))}
         {hiddenCount > 0 && (
-          <span
-            className="text-[9px] font-bold mt-0.5"
-            style={{ color: 'var(--color-text-tertiary)' }}
-          >
+          <span className="text-[9px] font-bold" style={{ color: 'var(--color-text-tertiary)' }}>
             +{hiddenCount}
           </span>
         )}
+        {activeTasks.length === 0 && (
+          <div className="w-4 h-[2px] rounded-full" style={{ backgroundColor: 'var(--color-separator)' }} />
+        )}
       </div>
-
-      {/* Total weight badge */}
-      {activeTasks.length > 0 && (
-        <div
-          className="mt-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-          style={{
-            backgroundColor: isToday ? 'var(--color-primary-light)' : 'var(--color-background-section)',
-            color: isToday ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-          }}
-        >
-          {totalWeight}
-        </div>
-      )}
     </button>
   )
 }

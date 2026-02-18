@@ -35,7 +35,7 @@ export function WeekView({ weekDates, tasks, onDayPress }: WeekViewProps) {
   }, [tasks])
 
   return (
-    <div className="p-3 bg-white">
+    <div className="p-3" style={{ backgroundColor: 'var(--color-background-card)' }}>
       <div className="flex gap-1">
         {weekDates.map(date => {
           const dateKey = format(startOfDay(date), 'yyyy-MM-dd')

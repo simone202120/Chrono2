@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { WeightBadge } from './WeightBadge'
 import { useTaskStore } from '@/store/taskStore'
+import { toLocalISODateTime } from '@/lib/utils'
 import type { Task } from '@/types/task'
 
 interface TaskDetailProps {
@@ -57,14 +58,14 @@ export function TaskDetail({ task, onClose, onEdit }: TaskDetailProps) {
     setIsSchedulingToday(true)
     const today = new Date()
     const todayStr = format(today, 'yyyy-MM-dd')
-    const { error } = await scheduleTask(task.id, `${todayStr}T09:00:00`)
+    const { error } = await scheduleTask(task.id, toLocalISODateTime(todayStr, '09:00'))
     setIsSchedulingToday(false)
     if (!error) onClose()
   }
 
   const handlePostpone = async () => {
     if (!postponeDate) return
-    const { error } = await postponeTask(task.id, `${postponeDate}T${postponeTime}:00`)
+    const { error } = await postponeTask(task.id, toLocalISODateTime(postponeDate, postponeTime))
     if (!error) onClose()
   }
 

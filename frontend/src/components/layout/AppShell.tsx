@@ -87,21 +87,30 @@ export function AppShell({
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="min-h-screen flex flex-col bg-slate-50">
-        {/* Header - Glassmorphic if desired, but let's keep it clean */}
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--color-background-main)' }}>
+        {/* Header — iOS navigation bar */}
         <header
-          className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 transition-all duration-300 backdrop-blur-md bg-white/80 border-b border-slate-100/50 supports-[backdrop-filter]:bg-white/60"
+          className="sticky top-0 z-30 flex items-center justify-between px-4 py-3 transition-all duration-200"
+          style={{
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            backgroundColor: 'rgba(242, 242, 247, 0.88)',
+            borderBottom: '0.5px solid var(--color-separator-opaque)',
+          }}
         >
-          <div className="flex-1 flex justify-start">{headerLeftAction}</div>
-          
-          <div className="flex-grow text-center">
+          <div className="flex-1 flex justify-start min-w-0">{headerLeftAction}</div>
+
+          <div className="flex-shrink-0 px-2 text-center">
             {typeof title === 'string' ? (
-              <h1 className="text-lg font-bold tracking-tight text-slate-800">{title}</h1>
-            ) : (
-              <div className="text-lg font-bold tracking-tight text-slate-800">{title}</div>
-            )}
+              <h1
+                className="text-[17px] font-semibold tracking-[-0.3px]"
+                style={{ color: 'var(--color-text-primary)' }}
+              >
+                {title}
+              </h1>
+            ) : title}
           </div>
-          
+
           <div className="flex-1 flex justify-end">{headerAction}</div>
         </header>
 

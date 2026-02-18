@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { Calendar, LayoutGrid, ListTodo } from 'lucide-react'
 import { useCalendar } from '@/hooks/useCalendar'
-import { cn } from '@/lib/utils'
 
 const tabs = [
   { to: '/', icon: Calendar, label: 'Oggi' },
@@ -10,63 +9,52 @@ const tabs = [
 ]
 
 /**
- * BottomNav - Floating navigation bar with labels
- * - Glassmorphism pill
- * - Labeled tabs with active pill highlight
+ * BottomNav — iOS-style tab bar
+ * - Hairline separator on top
+ * - Glass background with strong blur
+ * - Active: icon + label in primary color, bolder stroke
+ * - Inactive: gray icon + label
+ * - Safe area for home indicator
  */
 export function BottomNav() {
   const { goToToday } = useCalendar()
 
   return (
-    <div
-      className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none"
-      style={{
-        paddingBottom: 'max(16px, env(safe-area-inset-bottom))',
-        paddingLeft: '16px',
-        paddingRight: '16px',
-      }}
-    >
+    <div className="fixed bottom-0 left-0 right-0 z-40">
+      {/* iOS hairline separator */}
+      <div style={{ height: '0.5px', backgroundColor: 'var(--color-separator-opaque)' }} />
+
+      {/* Tab bar */}
       <nav
-        className="pointer-events-auto w-full max-w-sm flex items-center justify-around px-3 py-2 rounded-2xl glass-panel"
+        className="flex items-stretch justify-around bg-white/90 backdrop-blur-2xl"
         style={{
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255,255,255,0.4)',
+          paddingBottom: 'max(18px, env(safe-area-inset-bottom))',
+          paddingTop: '8px',
         }}
       >
         {tabs.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
+            end={to === '/'}
             onClick={to === '/' ? goToToday : undefined}
-            className={({ isActive }) => cn(
-              'flex flex-col items-center justify-center gap-0.5 transition-all duration-200 flex-1 py-1',
-              isActive ? 'text-indigo-600' : 'text-slate-400'
-            )}
+            className="flex-1"
           >
             {({ isActive }) => (
-              <>
-                <div className={cn(
-                  'relative px-4 py-1.5 rounded-xl transition-all duration-200',
-                  isActive ? 'bg-indigo-50' : 'bg-transparent'
-                )}>
-                  <Icon
-                    size={22}
-                    strokeWidth={isActive ? 2.5 : 2}
-                    className="transition-all duration-200"
-                  />
-                  {isActive && (
-                    <span
-                      className="absolute inset-x-0 -bottom-0.5 mx-auto h-0.5 w-4 rounded-full bg-indigo-500 animate-scale-in"
-                      style={{ width: '16px', left: '50%', transform: 'translateX(-50%)' }}
-                    />
-                  )}
-                </div>
-                <span className={cn(
-                  'text-[10px] font-semibold tracking-wide transition-all duration-200',
-                  isActive ? 'text-indigo-600' : 'text-slate-400'
-                )}>
+              <div className="flex flex-col items-center gap-0.5 py-0.5 transition-all duration-150 active:opacity-60">
+                <Icon
+                  size={26}
+                  strokeWidth={isActive ? 2.5 : 1.8}
+                  style={{ color: isActive ? 'var(--color-primary)' : '#8E8E93' }}
+                  className="transition-all duration-150"
+                />
+                <span
+                  className="text-[10px] font-medium tracking-tight transition-all duration-150"
+                  style={{ color: isActive ? 'var(--color-primary)' : '#8E8E93' }}
+                >
                   {label}
                 </span>
-              </>
+              </div>
             )}
           </NavLink>
         ))}

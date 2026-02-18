@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { X } from 'lucide-react'
 import { useTaskStore } from '@/store/taskStore'
 import { useAuthStore } from '@/store/authStore'
+import { toLocalISODateTime } from '@/lib/utils'
 import type { Task, TaskWeight } from '@/types/task'
 
 interface TaskFormProps {
@@ -63,7 +64,7 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
 
     const scheduledAt =
       destination === 'calendar' && scheduledDate
-        ? `${scheduledDate}T${scheduledTime}:00`
+        ? toLocalISODateTime(scheduledDate, scheduledTime)
         : null
 
     const { error } = await createTask({

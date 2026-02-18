@@ -70,14 +70,6 @@ export function DayPage() {
     return raw.charAt(0).toUpperCase() + raw.slice(1)
   }, [headerDateLabel])
 
-  // Summary weight color
-  const weightColor = totalWeight === 0
-    ? 'var(--color-success)'
-    : totalWeight < 5
-      ? 'var(--color-success)'
-      : totalWeight < 10
-        ? 'var(--color-warning)'
-        : 'var(--color-destructive)'
 
   return (
     <>

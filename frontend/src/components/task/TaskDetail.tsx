@@ -11,6 +11,7 @@ import {
   CornerDownLeft,
   CalendarClock,
   Trash2,
+  Zap,
 } from 'lucide-react'
 import { WeightBadge } from './WeightBadge'
 import { useTaskStore } from '@/store/taskStore'
@@ -29,14 +30,17 @@ interface TaskDetailProps {
  * - Notes section
  * - 2-column action grid + delete link
  * - Postpone inline picker
+ * - "Pianifica per oggi" button for backlog tasks
  */
 export function TaskDetail({ task, onClose, onEdit }: TaskDetailProps) {
-  const { completeTask, moveToBacklog, postponeTask, deleteTask } = useTaskStore()
+  const { completeTask, moveToBacklog, postponeTask, deleteTask, scheduleTask } = useTaskStore()
   const [showPostponePicker, setShowPostponePicker] = useState(false)
   const [postponeDate, setPostponeDate] = useState('')
   const [postponeTime, setPostponeTime] = useState('09:00')
+  const [isSchedulingToday, setIsSchedulingToday] = useState(false)
 
   const isCompleted = task.status === 'done'
+  const isBacklog = task.status === 'backlog'
   const isScheduled = task.scheduled_at !== null
 
   const handleComplete = async () => {
@@ -46,6 +50,15 @@ export function TaskDetail({ task, onClose, onEdit }: TaskDetailProps) {
 
   const handleMoveToBacklog = async () => {
     const { error } = await moveToBacklog(task.id)
+    if (!error) onClose()
+  }
+
+  const handleScheduleToday = async () => {
+    setIsSchedulingToday(true)
+    const today = new Date()
+    const todayStr = format(today, 'yyyy-MM-dd')
+    const { error } = await scheduleTask(task.id, `${todayStr}T09:00:00`)
+    setIsSchedulingToday(false)
     if (!error) onClose()
   }
 
@@ -89,6 +102,11 @@ export function TaskDetail({ task, onClose, onEdit }: TaskDetailProps) {
               {isCompleted && (
                 <span className="text-xs font-semibold text-emerald-500 mt-0.5 block">
                   Completato
+                </span>
+              )}
+              {isBacklog && (
+                <span className="text-xs font-medium text-slate-400 mt-0.5 block">
+                  Nel backlog
                 </span>
               )}
             </div>
@@ -163,50 +181,71 @@ export function TaskDetail({ task, onClose, onEdit }: TaskDetailProps) {
             </div>
           )}
 
-          {/* Actions — 2-column grid */}
+          {/* Actions */}
           {!isCompleted && (
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              {/* Complete */}
-              <button
-                type="button"
-                onClick={handleComplete}
-                className="py-3.5 px-4 rounded-2xl font-semibold text-white flex items-center justify-center gap-2 col-span-2 active:scale-[0.98] transition-all"
-                style={{ backgroundColor: 'var(--color-success)' }}
-              >
-                <CheckCircle2 size={20} />
-                Segna come fatto
-              </button>
+            <div className="space-y-3 mb-3">
 
-              {/* Move to backlog */}
-              {isScheduled && (
+              {/* Pianifica per oggi — solo per task in backlog */}
+              {isBacklog && (
                 <button
                   type="button"
-                  onClick={handleMoveToBacklog}
-                  className="py-3 px-3 rounded-2xl font-medium text-sm flex flex-col items-center justify-center gap-1 active:scale-[0.98] transition-all"
-                  style={{ backgroundColor: 'var(--color-background-section)', color: 'var(--color-text-primary)' }}
+                  onClick={handleScheduleToday}
+                  disabled={isSchedulingToday}
+                  className="w-full py-4 px-4 rounded-2xl font-bold text-white flex items-center justify-center gap-2.5 active:scale-[0.98] transition-all disabled:opacity-60"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+                    boxShadow: '0 4px 16px -2px rgba(99,102,241,0.4)',
+                  }}
                 >
-                  <CornerDownLeft size={18} />
-                  <span>Al backlog</span>
+                  <Zap size={20} fill="white" />
+                  {isSchedulingToday ? 'Pianificazione...' : 'Pianifica per oggi'}
                 </button>
               )}
 
-              {/* Postpone */}
-              <button
-                type="button"
-                onClick={() => setShowPostponePicker(!showPostponePicker)}
-                className="py-3 px-3 rounded-2xl font-medium text-sm flex flex-col items-center justify-center gap-1 active:scale-[0.98] transition-all"
-                style={{
-                  backgroundColor: showPostponePicker ? 'var(--color-primary-light)' : 'var(--color-background-section)',
-                  color: showPostponePicker ? 'var(--color-primary)' : 'var(--color-text-primary)',
-                }}
-              >
-                <CalendarClock size={18} />
-                <span>Rinvia</span>
-              </button>
+              {/* Grid azioni */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Complete */}
+                <button
+                  type="button"
+                  onClick={handleComplete}
+                  className="py-3.5 px-4 rounded-2xl font-semibold text-white flex items-center justify-center gap-2 col-span-2 active:scale-[0.98] transition-all"
+                  style={{ backgroundColor: 'var(--color-success)' }}
+                >
+                  <CheckCircle2 size={20} />
+                  Segna come fatto
+                </button>
+
+                {/* Move to backlog */}
+                {isScheduled && (
+                  <button
+                    type="button"
+                    onClick={handleMoveToBacklog}
+                    className="py-3 px-3 rounded-2xl font-medium text-sm flex flex-col items-center justify-center gap-1 active:scale-[0.98] transition-all"
+                    style={{ backgroundColor: 'var(--color-background-section)', color: 'var(--color-text-primary)' }}
+                  >
+                    <CornerDownLeft size={18} />
+                    <span>Al backlog</span>
+                  </button>
+                )}
+
+                {/* Postpone */}
+                <button
+                  type="button"
+                  onClick={() => setShowPostponePicker(!showPostponePicker)}
+                  className="py-3 px-3 rounded-2xl font-medium text-sm flex flex-col items-center justify-center gap-1 active:scale-[0.98] transition-all"
+                  style={{
+                    backgroundColor: showPostponePicker ? 'var(--color-primary-light)' : 'var(--color-background-section)',
+                    color: showPostponePicker ? 'var(--color-primary)' : 'var(--color-text-primary)',
+                  }}
+                >
+                  <CalendarClock size={18} />
+                  <span>{isBacklog ? 'Schedula' : 'Rinvia'}</span>
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Postpone picker */}
+          {/* Postpone/Schedule picker */}
           {showPostponePicker && (
             <div
               className="p-4 rounded-2xl space-y-3 mb-3 animate-fade-in"
@@ -245,7 +284,7 @@ export function TaskDetail({ task, onClose, onEdit }: TaskDetailProps) {
                 className="w-full py-2.5 px-4 rounded-xl font-semibold text-white transition-opacity disabled:opacity-40"
                 style={{ backgroundColor: 'var(--color-primary)' }}
               >
-                Conferma rinvio
+                {isBacklog ? 'Conferma pianificazione' : 'Conferma rinvio'}
               </button>
             </div>
           )}

@@ -297,18 +297,18 @@ export function BacklogPage() {
             ) : (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div
-                  className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4"
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4 animate-bounce-in"
                   style={{ backgroundColor: 'var(--color-background-section)' }}
                 >
-                  <span className="text-4xl">{searchQuery ? '🔍' : '📋'}</span>
+                  <span className="text-4xl">{searchQuery ? '🔍' : '✨'}</span>
                 </div>
-                <p className="font-semibold text-slate-700 mb-1">
-                  {searchQuery ? 'Nessun risultato' : 'Backlog vuoto'}
+                <p className="font-bold text-slate-800 mb-1.5 text-base">
+                  {searchQuery ? 'Nessun risultato' : 'Backlog pulito!'}
                 </p>
-                <p className="text-sm text-slate-400 max-w-[200px]">
+                <p className="text-sm text-slate-400 max-w-[200px] leading-relaxed">
                   {searchQuery
                     ? `Nessun impegno corrisponde a "${searchQuery}"`
-                    : 'Aggiungi impegni da pianificare in futuro'}
+                    : 'Aggiungi idee e impegni da pianificare in futuro'}
                 </p>
               </div>
             )}
@@ -319,16 +319,17 @@ export function BacklogPage() {
         <button
           onClick={() => setShowForm(true)}
           className={cn(
-            'fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center z-20 transition-all duration-300',
+            'fixed bottom-24 right-4 flex items-center gap-2 px-4 h-14 rounded-2xl z-20 transition-all duration-300',
             showFAB ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-90'
           )}
           style={{
-            backgroundColor: 'var(--color-primary)',
+            background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
             boxShadow: 'var(--shadow-fab)',
           }}
           aria-label="Aggiungi impegno"
         >
-          <Plus size={28} strokeWidth={2.5} color="white" />
+          <Plus size={22} strokeWidth={2.5} color="white" />
+          <span className="text-white font-bold text-sm pr-1">Nuovo</span>
         </button>
       </AppShell>
 

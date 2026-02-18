@@ -16,11 +16,10 @@ import type { Task } from '@/types/task'
 import { cn } from '@/lib/utils'
 
 /**
- * BacklogPage - Full screen backlog view
- * - Search bar for filtering by title
- * - "In scadenza" section for tasks due within 7 days
- * - Full backlog list with filters
- * - FAB with scroll detection (hide on scroll down, show on scroll up)
+ * BacklogPage - Revolut Modern Style
+ * - Modern search bar
+ * - Clean filters
+ * - Revolut-style FAB
  */
 export function BacklogPage() {
   const tasks = useTaskStore(state => state.tasks)
@@ -48,7 +47,6 @@ export function BacklogPage() {
     const handleScroll = () => {
       const currentScrollY = container.scrollTop
       const scrollingDown = currentScrollY > lastScrollY.current && currentScrollY > 50
-
       setShowFAB(!scrollingDown)
       lastScrollY.current = currentScrollY
     }
@@ -78,11 +76,10 @@ export function BacklogPage() {
       })
   }, [backlogTasks])
 
-  // Filtered and sorted regular backlog (excluding due soon)
+  // Filtered and sorted regular backlog
   const filteredBacklog = useMemo(() => {
     let filtered = backlogTasks.filter(t => !dueSoonTasks.includes(t))
 
-    // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(
@@ -92,7 +89,6 @@ export function BacklogPage() {
       )
     }
 
-    // Apply other filters
     if (filters.dueSoon) {
       const sevenDaysFromNow = new Date()
       sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
@@ -101,35 +97,21 @@ export function BacklogPage() {
       )
     }
 
-    if (filters.noDueDate) {
-      filtered = filtered.filter(t => !t.due_date)
-    }
+    if (filters.noDueDate) filtered = filtered.filter(t => !t.due_date)
+    if (filters.highPriority) filtered = filtered.filter(t => t.weight >= 4)
+    if (filters.recurringOnly) filtered = filtered.filter(t => t.is_recurring)
 
-    if (filters.highPriority) {
-      filtered = filtered.filter(t => t.weight >= 4)
-    }
-
-    if (filters.recurringOnly) {
-      filtered = filtered.filter(t => t.is_recurring)
-    }
-
-    // Apply sorting
     const sorted = [...filtered].sort((a, b) => {
       switch (filters.sortBy) {
-        case 'weight-desc':
-          return b.weight - a.weight
-        case 'weight-asc':
-          return a.weight - b.weight
+        case 'weight-desc': return b.weight - a.weight
+        case 'weight-asc': return a.weight - b.weight
         case 'due-date-asc':
           if (!a.due_date) return 1
           if (!b.due_date) return -1
           return new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
         case 'created-at-desc':
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          )
-        default:
-          return 0
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        default: return 0
       }
     })
 
@@ -140,46 +122,47 @@ export function BacklogPage() {
   const totalBacklogCount = backlogTasks.length
 
   const getSortLabel = (sortBy: SortOption) => {
-    switch (sortBy) {
-      case 'weight-desc':
-        return 'Peso ↓'
-      case 'weight-asc':
-        return 'Peso ↑'
-      case 'due-date-asc':
-        return 'Scadenza ↑'
-      case 'created-at-desc':
-        return 'Data ↓'
-      default:
-        return 'Peso ↓'
+    const labels: Record<SortOption, string> = {
+      'weight-desc': 'Peso ↓',
+      'weight-asc': 'Peso ↑',
+      'due-date-asc': 'Scadenza ↑',
+      'created-at-desc': 'Data ↓',
     }
+    return labels[sortBy]
   }
 
   const getDaysUntilDue = (dueDate: string) => {
     const days = differenceInDays(new Date(dueDate), new Date())
-    if (days === 0) return 'Scade oggi'
-    if (days === 1) return 'Scade domani'
-    return `Scade tra ${days}gg`
+    if (days === 0) return 'Oggi'
+    if (days === 1) return 'Domani'
+    return `${days}gg`
   }
 
   return (
     <>
       <AppShell
         title={
-          <span className="text-base font-semibold">
+          <span 
+            className="text-xl font-bold"
+            style={{ color: 'var(--text-primary)' }}
+          >
             Backlog ({totalBacklogCount})
           </span>
         }
         headerAction={
           <button
             onClick={() => setShowFilters(true)}
-            className="p-2 -mr-2 relative"
-            style={{ color: 'var(--color-text-secondary)' }}
+            className="p-2.5 rounded-full relative transition-colors"
+            style={{ 
+              backgroundColor: 'var(--bg-input)',
+              color: 'var(--text-secondary)',
+            }}
             aria-label="Filtri"
           >
-            <SlidersHorizontal size={20} />
+            <SlidersHorizontal size={18} />
             {activeFiltersCount > 0 && (
               <span
-                className="absolute top-0 right-0 w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-semibold"
+                className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold"
                 style={{
                   backgroundColor: 'var(--color-destructive)',
                   color: 'white',
@@ -191,35 +174,35 @@ export function BacklogPage() {
           </button>
         }
       >
-        <div ref={scrollContainerRef} className="h-full overflow-y-auto pb-24">
+        <div ref={scrollContainerRef} className="h-full overflow-y-auto no-scrollbar pb-24">
           {/* Search Bar */}
-          <div className="p-4 pb-2">
+          <div className="p-4 pb-3">
             <div
-              className="flex items-center gap-2 px-3 py-2 rounded-xl"
-              style={{ backgroundColor: 'var(--color-background-section)' }}
+              className="flex items-center gap-3 px-4 py-3 rounded-card"
+              style={{ 
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-subtle)',
+              }}
             >
-              <Search
-                size={18}
-                style={{ color: 'var(--color-text-tertiary)' }}
-              />
+              <Search size={18} style={{ color: 'var(--text-tertiary)' }} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Cerca impegni..."
-                className="flex-1 bg-transparent border-none outline-none text-sm"
-                style={{ color: 'var(--color-text-primary)' }}
+                className="flex-1 bg-transparent border-none outline-none text-base"
+                style={{ color: 'var(--text-primary)' }}
               />
             </div>
           </div>
 
-          {/* Current Sort Badge */}
-          <div className="px-4 pb-3">
+          {/* Sort Badge */}
+          <div className="px-4 pb-4">
             <span
-              className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full"
+              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full"
               style={{
-                backgroundColor: 'var(--color-background-section)',
-                color: 'var(--color-text-secondary)',
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-secondary)',
               }}
             >
               {getSortLabel(filters.sortBy)}
@@ -230,24 +213,26 @@ export function BacklogPage() {
           {dueSoonTasks.length > 0 && (
             <div className="px-4 mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <AlertCircle
-                  size={18}
-                  style={{ color: 'var(--color-destructive)' }}
-                />
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--color-destructive) + 15' }}
+                >
+                  <AlertCircle size={18} style={{ color: 'var(--color-destructive)' }} />
+                </div>
                 <h2
-                  className="text-sm font-semibold uppercase tracking-wide"
+                  className="text-sm font-bold uppercase tracking-wide"
                   style={{ color: 'var(--color-destructive)' }}
                 >
                   In scadenza ({dueSoonTasks.length})
                 </h2>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {dueSoonTasks.map(task => (
                   <div key={task.id} className="relative">
                     <BacklogItem task={task} onTap={setSelectedTask} />
                     {task.due_date && (
                       <div
-                        className="absolute top-2 right-2 px-2 py-0.5 text-xs font-medium rounded-full"
+                        className="absolute top-3 right-3 px-2.5 py-1 text-xs font-bold rounded-full"
                         style={{
                           backgroundColor: 'var(--color-destructive)',
                           color: 'white',
@@ -265,45 +250,47 @@ export function BacklogPage() {
           {/* Backlog Section */}
           <div className="px-4">
             <h2
-              className="text-xs font-semibold uppercase tracking-wide mb-3"
-              style={{ color: 'var(--color-text-secondary)' }}
+              className="text-xs font-bold uppercase tracking-wide mb-3"
+              style={{ color: 'var(--text-secondary)' }}
             >
               Tutti ({filteredBacklog.length})
             </h2>
             {filteredBacklog.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {filteredBacklog.map(task => (
                   <BacklogItem key={task.id} task={task} onTap={setSelectedTask} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <p
-                  className="text-sm"
-                  style={{ color: 'var(--color-text-tertiary)' }}
-                >
-                  {searchQuery
-                    ? 'Nessun risultato trovato'
-                    : 'Nessun impegno in backlog'}
+              <div 
+                className="text-center py-12 rounded-card"
+                style={{ backgroundColor: 'var(--bg-input)' }}
+              >
+                <p style={{ color: 'var(--text-tertiary)' }}>
+                  {searchQuery ? 'Nessun risultato trovato' : 'Nessun impegno in backlog'}
                 </p>
               </div>
             )}
           </div>
         </div>
-
-        {/* FAB (Floating Action Button) */}
-        <button
-          onClick={() => setShowForm(true)}
-          className={cn(
-            'fixed bottom-20 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-20',
-            showFAB ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-          )}
-          style={{ backgroundColor: 'var(--color-primary)' }}
-          aria-label="Aggiungi impegno"
-        >
-          <Plus size={28} strokeWidth={2.5} color="white" />
-        </button>
       </AppShell>
+
+      {/* Floating FAB */}
+      <button
+        onClick={() => setShowForm(true)}
+        className={cn(
+          'fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 z-40',
+          showFAB ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        )}
+        style={{
+          backgroundColor: 'var(--accent-primary)',
+          color: 'var(--text-inverse)',
+          boxShadow: '0 4px 20px var(--accent-glow)',
+        }}
+        aria-label="Aggiungi impegno"
+      >
+        <Plus size={28} strokeWidth={2.5} />
+      </button>
 
       {/* Task Form Modal */}
       {showForm && <TaskForm onClose={() => setShowForm(false)} />}

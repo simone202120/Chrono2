@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { X } from 'lucide-react'
 import { useTaskStore } from '@/store/taskStore'
 import { useAuthStore } from '@/store/authStore'
 import type { Task, TaskWeight } from '@/types/task'
+import { getWeightColor } from '@/lib/utils'
 
 interface TaskFormProps {
   onClose: () => void
@@ -12,18 +12,16 @@ interface TaskFormProps {
 }
 
 /**
- * TaskForm - Bottom sheet for creating new tasks
- * - All fields for task creation
- * - Weight selection with colored pills
- * - Backlog / Calendar toggle
- * - Date and time pickers
- * - Adaptive CTA button
+ * TaskForm - Revolut Style Bottom Sheet
+ * - Rounded top corners (28px)
+ * - Clean input design
+ * - Modern weight selector
+ * - Dark mode support
  */
 export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFormProps) {
   const user = useAuthStore(state => state.user)
   const createTask = useTaskStore(state => state.createTask)
 
-  // Form state - pre-fill if editing existing task
   const [title, setTitle] = useState(existingTask?.title || '')
   const [description, setDescription] = useState(existingTask?.description || '')
   const [weight, setWeight] = useState<TaskWeight>(existingTask?.weight || 3)
@@ -32,9 +30,7 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
     initialScheduledDate || existingTask?.scheduled_at ? 'calendar' : 'backlog'
   )
   const [scheduledDate, setScheduledDate] = useState(
-    initialScheduledDate ||
-      existingTask?.scheduled_at?.split('T')[0] ||
-      new Date().toISOString().split('T')[0]
+    initialScheduledDate || existingTask?.scheduled_at?.split('T')[0] || new Date().toISOString().split('T')[0]
   )
   const [scheduledTime, setScheduledTime] = useState(
     existingTask?.scheduled_at?.split('T')[1]?.slice(0, 5) || '09:00'
@@ -42,17 +38,9 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
   const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly' | 'custom'>(
     existingTask?.is_recurring ? 'weekly' : 'none'
   )
-  // Recurrence details state
-  const [recurrenceInterval, setRecurrenceInterval] = useState(
-    existingTask?.recurrence?.interval || 1
-  )
-  const [recurrenceWeekDays, setRecurrenceWeekDays] = useState<number[]>(
-    existingTask?.recurrence?.days || []
-  )
-  const [recurrenceUntil, setRecurrenceUntil] = useState(
-    existingTask?.recurrence?.until || ''
-  )
-
+  const [recurrenceInterval, setRecurrenceInterval] = useState(existingTask?.recurrence?.interval || 1)
+  const [recurrenceWeekDays, setRecurrenceWeekDays] = useState<number[]>(existingTask?.recurrence?.days || [])
+  const [recurrenceUntil, setRecurrenceUntil] = useState(existingTask?.recurrence?.until || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
@@ -61,10 +49,9 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
 
     setIsSubmitting(true)
 
-    const scheduledAt =
-      destination === 'calendar' && scheduledDate
-        ? `${scheduledDate}T${scheduledTime}:00`
-        : null
+    const scheduledAt = destination === 'calendar' && scheduledDate
+      ? `${scheduledDate}T${scheduledTime}:00`
+      : null
 
     const { error } = await createTask({
       user_id: user.id,
@@ -76,72 +63,70 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
       completed_at: null,
       status: destination === 'backlog' ? 'backlog' : 'scheduled',
       is_recurring: recurrence !== 'none',
-      recurrence:
-        recurrence !== 'none'
-          ? {
-              type: recurrence,
-              interval: recurrenceInterval,
-              days: recurrence === 'weekly' ? recurrenceWeekDays : undefined,
-              until: recurrenceUntil || null,
-            }
-          : null,
+      recurrence: recurrence !== 'none' ? {
+        type: recurrence,
+        interval: recurrenceInterval,
+        days: recurrence === 'weekly' ? recurrenceWeekDays : undefined,
+        until: recurrenceUntil || null,
+      } : null,
       parent_id: null,
     })
 
     setIsSubmitting(false)
-
-    if (!error) {
-      onClose()
-    }
-  }
-
-  const weightColors: Record<TaskWeight, string> = {
-    1: 'var(--color-weight-1)',
-    2: 'var(--color-weight-2)',
-    3: 'var(--color-weight-3)',
-    4: 'var(--color-weight-4)',
-    5: 'var(--color-weight-5)',
+    if (!error) onClose()
   }
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      className="fixed inset-0 z-50 flex items-end animate-fade-in"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
       onClick={onClose}
     >
       <form
-        className="w-full rounded-t-3xl p-6 max-h-[90vh] overflow-y-auto"
-        style={{ backgroundColor: 'var(--color-background-card)' }}
+        className="w-full max-h-[90vh] overflow-y-auto no-scrollbar animate-slide-in"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderRadius: '28px 28px 0 0',
+        }}
         onClick={e => e.stopPropagation()}
         onSubmit={handleSubmit}
       >
-        {/* Drag handle */}
-        <div className="flex justify-center mb-4">
-          <div
-            className="w-10 h-1 rounded-full"
-            style={{ backgroundColor: 'var(--color-separator)' }}
+        {/* Drag Handle */}
+        <div className="flex justify-center pt-3 pb-4 sticky top-0 bg-inherit z-10">
+          <div 
+            className="w-10 h-1.5 rounded-full"
+            style={{ backgroundColor: 'var(--border-default)' }}
           />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">
+        <div className="flex items-center justify-between px-5 pb-6">
+          <h2 
+            className="text-xl font-bold"
+            style={{ color: 'var(--text-primary)' }}
+          >
             {existingTask ? 'Schedula impegno' : 'Nuovo impegno'}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 -mr-2"
-            style={{ color: 'var(--color-text-secondary)' }}
+            className="p-2 rounded-full transition-colors"
+            style={{ 
+              backgroundColor: 'var(--bg-input)',
+              color: 'var(--text-secondary)',
+            }}
           >
-            <X size={24} />
+            <X size={20} />
           </button>
         </div>
 
-        <div className="space-y-6">
-          {/* Title */}
+        <div className="px-5 pb-8 space-y-6">
+          {/* Title Input */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label 
+              className="block text-sm font-semibold mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               Titolo *
             </label>
             <input
@@ -150,144 +135,151 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
               onChange={e => setTitle(e.target.value)}
               placeholder="Descrivi l'impegno..."
               required
-              className="w-full px-4 py-3 rounded-xl border text-base"
+              className="w-full px-4 py-3.5 rounded-card text-base font-medium transition-all outline-none"
               style={{
-                backgroundColor: 'var(--color-background-card)',
-                borderColor: 'var(--color-separator)',
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-primary)',
               }}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Note (opzionale)
+            <label 
+              className="block text-sm font-semibold mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Note
             </label>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="Aggiungi dettagli..."
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border text-base resize-none"
+              className="w-full px-4 py-3.5 rounded-card text-base resize-none transition-all outline-none"
               style={{
-                backgroundColor: 'var(--color-background-card)',
-                borderColor: 'var(--color-separator)',
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-primary)',
               }}
             />
           </div>
 
-          {/* Weight */}
+          {/* Weight Selector */}
           <div>
-            <label className="block text-sm font-medium mb-3">
+            <label 
+              className="block text-sm font-semibold mb-3"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               Peso / Impegno
             </label>
-            <div className="flex gap-2 justify-between">
-              {([1, 2, 3, 4, 5] as TaskWeight[]).map(w => (
-                <button
-                  key={w}
-                  type="button"
-                  onClick={() => setWeight(w)}
-                  className="flex-1 py-2 px-3 rounded-full font-semibold text-sm transition-all"
-                  style={{
-                    backgroundColor:
-                      weight === w
-                        ? weightColors[w]
-                        : 'var(--color-background-section)',
-                    color: weight === w ? 'white' : 'var(--color-text-primary)',
-                    border:
-                      weight === w ? 'none' : '1px solid var(--color-separator)',
-                  }}
-                >
-                  {w}
-                </button>
-              ))}
-            </div>
-            <div className="flex justify-between mt-2 text-xs">
-              <span style={{ color: 'var(--color-text-secondary)' }}>
-                Lieve
-              </span>
-              <span style={{ color: 'var(--color-text-secondary)' }}>
-                Critico
-              </span>
+            <div className="flex gap-2">
+              {([1, 2, 3, 4, 5] as TaskWeight[]).map(w => {
+                const color = getWeightColor(w)
+                const isSelected = weight === w
+                return (
+                  <button
+                    key={w}
+                    type="button"
+                    onClick={() => setWeight(w)}
+                    className="flex-1 py-3 rounded-card font-bold text-base transition-all duration-200"
+                    style={{
+                      backgroundColor: isSelected ? color : 'var(--bg-input)',
+                      color: isSelected ? 'white' : 'var(--text-secondary)',
+                      boxShadow: isSelected ? `0 4px 12px ${color}50` : 'none',
+                    }}
+                  >
+                    {w}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
-          {/* Due date */}
+          {/* Due Date */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label 
+              className="block text-sm font-semibold mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               Data scadenza
             </label>
             <input
               type="date"
               value={dueDate}
               onChange={e => setDueDate(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border"
+              className="w-full px-4 py-3.5 rounded-card text-base outline-none"
               style={{
-                backgroundColor: 'var(--color-background-card)',
-                borderColor: 'var(--color-separator)',
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-primary)',
               }}
             />
           </div>
 
-          {/* Destination */}
+          {/* Destination Toggle */}
           <div>
-            <label className="block text-sm font-medium mb-3">
+            <label 
+              className="block text-sm font-semibold mb-3"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               Dove lo aggiungi?
             </label>
-            <div className="space-y-2">
-              <label className="flex items-center gap-3 p-3 rounded-xl border cursor-pointer">
-                <input
-                  type="radio"
-                  name="destination"
-                  value="backlog"
-                  checked={destination === 'backlog'}
-                  onChange={e => setDestination(e.target.value as 'backlog')}
-                  style={{ accentColor: 'var(--color-primary)' }}
-                />
-                <span>Backlog (decido dopo)</span>
-              </label>
-              <label className="flex items-center gap-3 p-3 rounded-xl border cursor-pointer">
-                <input
-                  type="radio"
-                  name="destination"
-                  value="calendar"
-                  checked={destination === 'calendar'}
-                  onChange={e => setDestination(e.target.value as 'calendar')}
-                  style={{ accentColor: 'var(--color-primary)' }}
-                />
-                <span>Calendario</span>
-              </label>
+            <div 
+              className="flex rounded-card p-1"
+              style={{ backgroundColor: 'var(--bg-input)' }}
+            >
+              {(['backlog', 'calendar'] as const).map((dest) => (
+                <button
+                  key={dest}
+                  type="button"
+                  onClick={() => setDestination(dest)}
+                  className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200"
+                  style={{
+                    backgroundColor: destination === dest ? 'var(--bg-card)' : 'transparent',
+                    color: destination === dest ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                    boxShadow: destination === dest ? 'var(--shadow-soft)' : 'none',
+                  }}
+                >
+                  {dest === 'backlog' ? 'Backlog' : 'Calendario'}
+                </button>
+              ))}
             </div>
 
+            {/* Calendar Fields */}
             {destination === 'calendar' && (
-              <div className="mt-3 flex gap-3">
+              <div className="mt-4 flex gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs mb-1" style={{ color: 'var(--color-text-secondary)' }}>
+                  <label 
+                    className="block text-xs font-medium mb-1.5"
+                    style={{ color: 'var(--text-tertiary)' }}
+                  >
                     Data
                   </label>
                   <input
                     type="date"
                     value={scheduledDate}
                     onChange={e => setScheduledDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border text-sm"
+                    className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                     style={{
-                      backgroundColor: 'var(--color-background-card)',
-                      borderColor: 'var(--color-separator)',
+                      backgroundColor: 'var(--bg-input)',
+                      color: 'var(--text-primary)',
                     }}
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs mb-1" style={{ color: 'var(--color-text-secondary)' }}>
+                  <label 
+                    className="block text-xs font-medium mb-1.5"
+                    style={{ color: 'var(--text-tertiary)' }}
+                  >
                     Ora
                   </label>
                   <input
                     type="time"
                     value={scheduledTime}
                     onChange={e => setScheduledTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border text-sm"
+                    className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                     style={{
-                      backgroundColor: 'var(--color-background-card)',
-                      borderColor: 'var(--color-separator)',
+                      backgroundColor: 'var(--bg-input)',
+                      color: 'var(--text-primary)',
                     }}
                   />
                 </div>
@@ -297,7 +289,10 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
 
           {/* Recurrence */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label 
+              className="block text-sm font-semibold mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               Ricorrenza
             </label>
             <select
@@ -305,17 +300,16 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
               onChange={e => {
                 const value = e.target.value as typeof recurrence
                 setRecurrence(value)
-                // Reset fields when changing recurrence type
                 if (value === 'none') {
                   setRecurrenceWeekDays([])
                   setRecurrenceInterval(1)
                   setRecurrenceUntil('')
                 }
               }}
-              className="w-full px-4 py-3 rounded-xl border"
+              className="w-full px-4 py-3.5 rounded-card text-base outline-none appearance-none"
               style={{
-                backgroundColor: 'var(--color-background-card)',
-                borderColor: 'var(--color-separator)',
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-primary)',
               }}
             >
               <option value="none">Nessuna</option>
@@ -325,13 +319,16 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
               <option value="custom">Personalizzata</option>
             </select>
 
-            {/* Weekly: Days selection */}
+            {/* Weekly Days */}
             {recurrence === 'weekly' && (
-              <div className="mt-3">
-                <label className="block text-xs mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+              <div className="mt-4">
+                <label 
+                  className="block text-xs font-medium mb-2"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
                   Giorni della settimana
                 </label>
-                <div className="flex gap-1 justify-between">
+                <div className="flex gap-1.5">
                   {[
                     { day: 1, label: 'L' },
                     { day: 2, label: 'M' },
@@ -340,84 +337,64 @@ export function TaskForm({ onClose, existingTask, initialScheduledDate }: TaskFo
                     { day: 5, label: 'V' },
                     { day: 6, label: 'S' },
                     { day: 0, label: 'D' },
-                  ].map(({ day, label }) => (
-                    <button
-                      key={day}
-                      type="button"
-                      onClick={() => {
-                        setRecurrenceWeekDays(prev =>
-                          prev.includes(day)
-                            ? prev.filter(d => d !== day)
-                            : [...prev, day].sort()
-                        )
-                      }}
-                      className="flex-1 aspect-square rounded-full font-semibold text-sm transition-all"
-                      style={{
-                        backgroundColor: recurrenceWeekDays.includes(day)
-                          ? 'var(--color-primary)'
-                          : 'var(--color-background-section)',
-                        color: recurrenceWeekDays.includes(day)
-                          ? 'white'
-                          : 'var(--color-text-primary)',
-                        border: recurrenceWeekDays.includes(day)
-                          ? 'none'
-                          : '1px solid var(--color-separator)',
-                      }}
-                    >
-                      {label}
-                    </button>
-                  ))}
+                  ].map(({ day, label }) => {
+                    const isSelected = recurrenceWeekDays.includes(day)
+                    return (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() => {
+                          setRecurrenceWeekDays(prev =>
+                            prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day].sort()
+                          )
+                        }}
+                        className="flex-1 aspect-square rounded-xl font-bold text-sm transition-all duration-200"
+                        style={{
+                          backgroundColor: isSelected ? 'var(--accent-primary)' : 'var(--bg-input)',
+                          color: isSelected ? 'var(--text-inverse)' : 'var(--text-secondary)',
+                        }}
+                      >
+                        {label}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             )}
 
-            {/* Custom: Interval input */}
-            {recurrence === 'custom' && (
-              <div className="mt-3">
-                <label className="block text-xs mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                  Ogni quanti giorni?
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="365"
-                  value={recurrenceInterval}
-                  onChange={e => setRecurrenceInterval(Number(e.target.value))}
-                  className="w-full px-4 py-2 rounded-xl border text-sm"
-                  style={{
-                    backgroundColor: 'var(--color-background-card)',
-                    borderColor: 'var(--color-separator)',
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Until date (for all recurrence types except 'none') */}
+            {/* Until Date */}
             {recurrence !== 'none' && (
-              <div className="mt-3">
-                <label className="block text-xs mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+              <div className="mt-4">
+                <label 
+                  className="block text-xs font-medium mb-1.5"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
                   Termina il (opzionale)
                 </label>
                 <input
                   type="date"
                   value={recurrenceUntil}
                   onChange={e => setRecurrenceUntil(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl border text-sm"
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none"
                   style={{
-                    backgroundColor: 'var(--color-background-card)',
-                    borderColor: 'var(--color-separator)',
+                    backgroundColor: 'var(--bg-input)',
+                    color: 'var(--text-primary)',
                   }}
                 />
               </div>
             )}
           </div>
 
-          {/* Submit */}
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={!title.trim() || isSubmitting}
-            className="w-full py-4 rounded-xl font-semibold text-white transition-opacity disabled:opacity-50"
-            style={{ backgroundColor: 'var(--color-primary)' }}
+            className="w-full py-4 rounded-card font-bold text-base transition-all duration-200 disabled:opacity-50"
+            style={{
+              backgroundColor: 'var(--accent-primary)',
+              color: 'var(--text-inverse)',
+              boxShadow: '0 4px 16px var(--accent-glow)',
+            }}
           >
             {isSubmitting
               ? 'Salvataggio...'

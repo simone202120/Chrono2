@@ -2,39 +2,48 @@
 
 @layer base {
   :root {
-    /* Modern Palette - Neo-Clean */
-    --color-background-main: #f8fafc; /* slate-50 */
-    --color-background-card: #ffffff;
-    --color-background-glass: rgba(255, 255, 255, 0.85);
+    /* =============================================
+       REVOLUT MODERN DESIGN SYSTEM
+       ============================================= */
     
-    --color-text-primary: #0f172a; /* slate-900 */
-    --color-text-secondary: #64748b; /* slate-500 */
-    --color-text-tertiary: #94a3b8; /* slate-400 */
-    --color-text-placeholder: #cbd5e1; /* slate-300 */
-
-    /* Brand Colors - Vibrant Indigo/Violet */
-    --color-primary: #6366f1; /* indigo-500 */
-    --color-primary-dark: #4338ca; /* indigo-700 */
-    --color-primary-light: #e0e7ff; /* indigo-100 */
+    /* Light Mode - Default */
+    --bg-primary: #F2F2F7;
+    --bg-secondary: #EFEFF4;
+    --bg-card: #FFFFFF;
+    --bg-elevated: #FFFFFF;
+    --bg-input: #F5F5F7;
     
-    --color-destructive: #ef4444; /* red-500 */
-    --color-success: #10b981; /* emerald-500 */
-    --color-warning: #f59e0b; /* amber-500 */
+    --text-primary: #000000;
+    --text-secondary: #8E8E93;
+    --text-tertiary: #C7C7CC;
+    --text-inverse: #FFFFFF;
     
-    --color-separator: #e2e8f0; /* slate-200 */
-
-    /* Task Weight Gradients/Colors (Modern dots) */
-    --color-weight-1: #10b981; /* emerald */
-    --color-weight-2: #0ea5e9; /* sky */
-    --color-weight-3: #6366f1; /* indigo */
-    --color-weight-4: #f59e0b; /* amber */
-    --color-weight-5: #ef4444; /* red */
-
-    /* Shadows & Effects */
-    --shadow-soft: 0 2px 8px -2px rgba(0, 0, 0, 0.05);
-    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-floating: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    --blur-glass: 12px;
+    --accent-primary: #00B4A6;
+    --accent-secondary: #00D4AA;
+    --accent-glow: rgba(0, 180, 166, 0.3);
+    
+    --border-default: rgba(0, 0, 0, 0.08);
+    --border-subtle: rgba(0, 0, 0, 0.04);
+    
+    --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --shadow-colored: 0 4px 20px;
+    
+    --blur-glass: 20px;
+    
+    /* Weight Colors - Gradient from Cyan to Red */
+    --color-weight-1: #00E5CC;
+    --color-weight-2: #00D9FF;
+    --color-weight-3: #5E72E4;
+    --color-weight-4: #FF6B9D;
+    --color-weight-5: #FF2D55;
+    
+    /* Status Colors */
+    --color-success: #00B4A6;
+    --color-warning: #FFB800;
+    --color-destructive: #FF3B30;
+    --color-info: #5E72E4;
     
     /* Typography */
     font-synthesis: none;
@@ -43,39 +52,75 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Dark Mode */
+  [data-theme='dark'] {
+    --bg-primary: #0A0A0F;
+    --bg-secondary: #121216;
+    --bg-card: #1C1C1E;
+    --bg-elevated: #242428;
+    --bg-input: #2C2C2E;
+    
+    --text-primary: #FFFFFF;
+    --text-secondary: #8E8E93;
+    --text-tertiary: #636366;
+    --text-inverse: #000000;
+    
+    --accent-primary: #00E5CC;
+    --accent-secondary: #00F0D4;
+    --accent-glow: rgba(0, 229, 204, 0.4);
+    
+    --border-default: rgba(255, 255, 255, 0.1);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    
+    --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.6);
+  }
+
   * {
-    border-color: var(--color-separator);
+    border-color: var(--border-default);
   }
 
   body {
-    background-color: var(--color-background-main);
-    color: var(--color-text-primary);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Utilities */
+  /* =============================================
+     UTILITY CLASSES
+     ============================================= */
+
   .glass-panel {
-    background-color: var(--color-background-glass);
+    background: rgba(var(--bg-card), 0.8);
     backdrop-filter: blur(var(--blur-glass));
     -webkit-backdrop-filter: blur(var(--blur-glass));
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border-default);
   }
 
-  .modern-card {
-    background-color: var(--color-background-card);
-    border-radius: 1.25rem; /* 20px */
+  .revolut-card {
+    background-color: var(--bg-card);
+    border-radius: 20px;
     box-shadow: var(--shadow-card);
-    border: 1px solid rgba(226, 232, 240, 0.6);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-subtle);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .modern-card:active {
-    transform: scale(0.98);
+  .revolut-card:active {
+    transform: scale(0.97);
     box-shadow: var(--shadow-soft);
+  }
+
+  .floating-pill {
+    background-color: var(--bg-elevated);
+    border-radius: 28px;
+    box-shadow: var(--shadow-floating);
+    border: 1px solid var(--border-default);
   }
 
   /* Hide Scrollbar but allow scroll */
@@ -95,12 +140,89 @@
     }
   }
 
+  /* =============================================
+     ANIMATIONS
+     ============================================= */
+
   @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
   
   .animate-fade-in {
     animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
+
+  @keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .animate-slide-in {
+    animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+    50% { box-shadow: 0 0 20px 4px var(--accent-glow); }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--bg-secondary) 25%,
+      var(--bg-card) 50%,
+      var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+/* =============================================
+   WEIGHT COLOR UTILITIES
+   ============================================= */
+
+.weight-1 { --weight-color: var(--color-weight-1); }
+.weight-2 { --weight-color: var(--color-weight-2); }
+.weight-3 { --weight-color: var(--color-weight-3); }
+.weight-4 { --weight-color: var(--color-weight-4); }
+.weight-5 { --weight-color: var(--color-weight-5); }
+
+/* Dynamic shadow based on weight */
+.shadow-weight {
+  box-shadow: var(--shadow-colored) var(--weight-color, rgba(0, 0, 0, 0.08));
+}
+
+/* Gradient border effect */
+.gradient-border {
+  position: relative;
+  background: var(--bg-card);
+  border-radius: 20px;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--weight-color, transparent), transparent);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }

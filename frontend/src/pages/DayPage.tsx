@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { format, startOfDay } from 'date-fns'
+import { it } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight, Plus, Calendar } from 'lucide-react'
 import { useDroppable } from '@dnd-kit/core'
 import { AppShell } from '@/components/layout/AppShell'
@@ -9,33 +10,28 @@ import { BacklogPanel } from '@/components/backlog/BacklogPanel'
 import { useTaskStore } from '@/store/taskStore'
 import { useCalendar } from '@/hooks/useCalendar'
 import type { Task } from '@/types/task'
-import { cn } from '@/lib/utils'
+import { getWeightColor } from '@/lib/utils'
 
 /**
- * DayPage - Main day view page
- * - Header with date navigation (← →) and add button (+)
- * - Agenda section: tasks scheduled for selected day
- * - Total weight badge with color coding
- * - Backlog section below
- * - Horizontal swipe to navigate between days
+ * DayPage - Revolut Modern Style
+ * - Large date header
+ * - Modern weight badge
+ * - Clean card layout
+ * - Floating FAB
  */
 export function DayPage() {
   const tasks = useTaskStore(state => state.tasks)
   const [showForm, setShowForm] = useState(false)
   const {
     selectedDateISO,
+    selectedDate,
     goToNextDay,
     goToPreviousDay,
     goToToday,
     isToday,
-    dateLabel,
-    headerDateLabel,
   } = useCalendar()
 
-  // Drop zone for the day
-  const { setNodeRef, isOver } = useDroppable({
-    id: selectedDateISO,
-  })
+  const { setNodeRef, isOver } = useDroppable({ id: selectedDateISO })
 
   // Get tasks for selected date
   const dayTasks = useMemo(() => {
@@ -51,119 +47,135 @@ export function DayPage() {
       })
   }, [tasks, selectedDateISO])
 
-  // Calculate total weight for the day
+  // Calculate total weight
   const totalWeight = useMemo(() => {
     return dayTasks.reduce((sum, task) => sum + task.weight, 0)
   }, [dayTasks])
 
-  // Weight badge color
-  const weightColor = useMemo(() => {
-    if (totalWeight < 5) return 'var(--color-success)' // Green
-    if (totalWeight < 10) return 'var(--color-warning)' // Yellow
-    return 'var(--color-destructive)' // Red
-  }, [totalWeight])
-
   const scheduleTask = useTaskStore(state => state.scheduleTask)
 
-  // Drag & drop handlers
   const handleTaskDrop = async (task: Task, dateString: string) => {
-    // Direct schedule to 09:00 of the target day
     const scheduledAt = `${dateString}T09:00:00`
     await scheduleTask(task.id, scheduledAt)
   }
+
+  // Format date for display
+  const formattedDate = useMemo(() => {
+    if (isToday) return 'Oggi'
+    return format(selectedDate, 'EEEE d MMMM', { locale: it })
+  }, [selectedDate, isToday])
 
   return (
     <>
       <AppShell
         onTaskDrop={handleTaskDrop}
         title={
-          <span
-            className="text-base font-semibold capitalize"
-            style={{ color: isToday ? 'var(--color-primary)' : 'var(--color-text-primary)' }}
-          >
-            {headerDateLabel}
-          </span>
+          <div className="flex flex-col items-center">
+            <span 
+              className="text-xs font-semibold uppercase tracking-wider mb-0.5"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              {format(selectedDate, 'MMMM yyyy', { locale: it })}
+            </span>
+            <span 
+              className="text-xl font-bold capitalize"
+              style={{ 
+                color: isToday ? 'var(--accent-primary)' : 'var(--text-primary)',
+              }}
+            >
+              {formattedDate}
+            </span>
+          </div>
         }
         headerLeftAction={
           <div className="flex items-center gap-1">
             <button
               onClick={goToPreviousDay}
-              className="p-2 -ml-2"
-              style={{ color: 'var(--color-text-secondary)' }}
+              className="p-2 rounded-full transition-colors"
+              style={{ 
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-secondary)',
+              }}
               aria-label="Giorno precedente"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={goToNextDay}
-              className="p-2"
-              style={{ color: 'var(--color-text-secondary)' }}
+              className="p-2 rounded-full transition-colors"
+              style={{ 
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-secondary)',
+              }}
               aria-label="Giorno successivo"
             >
               <ChevronRight size={20} />
             </button>
-            {!isToday && (
-              <button
-                onClick={goToToday}
-                className="ml-1 px-3 py-1 text-xs font-semibold rounded-full"
-                style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white',
-                }}
-                aria-label="Vai a oggi"
-              >
-                Oggi
-              </button>
-            )}
           </div>
         }
         headerAction={
-          <button
-            onClick={() => setShowForm(true)}
-            className="p-2 -mr-2"
-            style={{ color: 'var(--color-primary)' }}
-            aria-label="Aggiungi impegno"
-          >
-            <Plus size={24} strokeWidth={2} />
-          </button>
+          !isToday ? (
+            <button
+              onClick={goToToday}
+              className="px-3 py-1.5 text-xs font-bold rounded-full transition-colors"
+              style={{
+                backgroundColor: 'var(--accent-primary)',
+                color: 'var(--text-inverse)',
+              }}
+            >
+              Oggi
+            </button>
+          ) : null
         }
       >
-        <div
-          className="min-h-full"
-          style={{ touchAction: 'pan-y' }}
-        >
-          {/* Agenda Section */}
-          <div
-            ref={setNodeRef}
-            className={cn(
-              "p-4 transition-colors duration-200 rounded-3xl mx-2 mt-2",
-              isOver ? "bg-indigo-50/50 ring-2 ring-indigo-500 ring-offset-2" : ""
-            )}
-          >
-            {/* Section Header */}
-            <div className="flex items-center justify-between mb-3">
-              <h2
+        <div className="min-h-full" style={{ touchAction: 'pan-y' }}>
+          {/* Date Navigation & Total Weight */}
+          <div className="flex items-center justify-between mb-4 px-1">
+            <div className="flex items-center gap-3">
+              <h2 
                 className="text-sm font-semibold uppercase tracking-wide"
-                style={{ color: 'var(--color-text-secondary)' }}
+                style={{ color: 'var(--text-secondary)' }}
               >
-                {dateLabel}
+                Agenda
               </h2>
               {dayTasks.length > 0 && (
-                <span
-                  className="text-xs font-medium px-2 py-1 rounded-full"
-                  style={{
-                    color: 'white',
-                    backgroundColor: weightColor,
-                  }}
+                <div 
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+                  style={{ backgroundColor: 'var(--bg-input)' }}
                 >
-                  Peso totale: {totalWeight}
-                </span>
+                  <span 
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ 
+                      backgroundColor: totalWeight > 10 
+                        ? 'var(--color-destructive)' 
+                        : totalWeight > 5 
+                          ? 'var(--color-warning)' 
+                          : 'var(--accent-primary)',
+                    }}
+                  />
+                  <span 
+                    className="text-xs font-bold"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    Peso {totalWeight}
+                  </span>
+                </div>
               )}
             </div>
+          </div>
 
+          {/* Agenda Section - Drop Zone */}
+          <div
+            ref={setNodeRef}
+            className="rounded-card p-4 mb-6 transition-all duration-200"
+            style={{
+              backgroundColor: isOver ? 'var(--accent-primary) + 08' : 'var(--bg-card)',
+              border: isOver ? '2px dashed var(--accent-primary)' : '1px solid var(--border-subtle)',
+            }}
+          >
             {/* Task List */}
             {dayTasks.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {dayTasks.map(task => (
                   <SwipeableTaskCard key={task.id} task={task} />
                 ))}
@@ -171,27 +183,35 @@ export function DayPage() {
             ) : (
               /* Empty State */
               <div
-                className="flex flex-col items-center justify-center py-12 px-6 rounded-xl"
-                style={{ backgroundColor: 'var(--color-background-section)' }}
+                className="flex flex-col items-center justify-center py-16 px-6 rounded-xl"
+                style={{ backgroundColor: 'var(--bg-input)' }}
               >
-                <Calendar
-                  size={48}
-                  strokeWidth={1.5}
-                  style={{ color: 'var(--color-text-tertiary)' }}
-                  className="mb-3"
-                />
-                <p
-                  className="text-sm text-center mb-4"
-                  style={{ color: 'var(--color-text-secondary)' }}
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
+                  style={{ backgroundColor: 'var(--bg-card)' }}
                 >
-                  Nessun impegno.
-                  <br />
-                  Trascina dal backlog o aggiungi +
+                  <Calendar size={28} style={{ color: 'var(--text-tertiary)' }} />
+                </div>
+                <p 
+                  className="text-base font-semibold text-center mb-1"
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Nessun impegno
+                </p>
+                <p 
+                  className="text-sm text-center mb-5"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  Trascina dal backlog o aggiungi
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="px-4 py-2 text-sm font-medium rounded-full text-white"
-                  style={{ backgroundColor: 'var(--color-primary)' }}
+                  className="px-5 py-2.5 text-sm font-bold rounded-full transition-all"
+                  style={{ 
+                    backgroundColor: 'var(--accent-primary)',
+                    color: 'var(--text-inverse)',
+                    boxShadow: '0 4px 16px var(--accent-glow)',
+                  }}
                 >
                   Aggiungi impegno
                 </button>
@@ -200,16 +220,33 @@ export function DayPage() {
           </div>
 
           {/* Backlog Section */}
-          <div className="mt-6 px-4 pb-24">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400 mb-3 px-2">
-              Backlog
-            </h2>
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-              <BacklogPanel onAddTask={() => setShowForm(true)} />
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3 px-1">
+              <h2 
+                className="text-sm font-semibold uppercase tracking-wide"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                Backlog
+              </h2>
             </div>
+            <BacklogPanel onAddTask={() => setShowForm(true)} />
           </div>
         </div>
       </AppShell>
+
+      {/* Floating FAB */}
+      <button
+        onClick={() => setShowForm(true)}
+        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95"
+        style={{
+          backgroundColor: 'var(--accent-primary)',
+          color: 'var(--text-inverse)',
+          boxShadow: '0 4px 20px var(--accent-glow)',
+        }}
+        aria-label="Aggiungi impegno"
+      >
+        <Plus size={28} strokeWidth={2.5} />
+      </button>
 
       {/* Task Form Modal */}
       {showForm && <TaskForm onClose={() => setShowForm(false)} />}

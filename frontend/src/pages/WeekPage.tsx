@@ -10,18 +10,17 @@ import { useCalendar } from '@/hooks/useCalendar'
 import type { Task } from '@/types/task'
 
 /**
- * WeekPage - Modern Week View
- * - Focus on the timeline
- * - Removed backlog split
- * - Clean header
+ * WeekPage - Revolut Modern Style
+ * - Clean week grid
+ * - Modern navigation
+ * - Integrated backlog
  */
 export function WeekPage() {
   const navigate = useNavigate()
   const scheduleTask = useTaskStore(state => state.scheduleTask)
   const tasks = useTaskStore(state => state.tasks)
   const [showForm, setShowForm] = useState(false)
-  const { weekDates, weekRangeLabel, goToNextWeek, goToPreviousWeek, setSelectedDate } =
-    useCalendar()
+  const { weekRangeLabel, goToNextWeek, goToPreviousWeek, setSelectedDate } = useCalendar()
 
   const handleDayPress = (date: Date) => {
     setSelectedDate(date)
@@ -29,7 +28,6 @@ export function WeekPage() {
   }
 
   const handleTaskDrop = async (task: Task, dateString: string) => {
-    // Direct schedule to 09:00 of the target day
     const scheduledAt = `${dateString}T09:00:00`
     await scheduleTask(task.id, scheduledAt)
   }
@@ -39,65 +37,83 @@ export function WeekPage() {
       <AppShell
         onTaskDrop={handleTaskDrop}
         title={
-          <span className="text-lg font-bold tracking-tight text-slate-800">
+          <span 
+            className="text-xl font-bold"
+            style={{ color: 'var(--text-primary)' }}
+          >
             {weekRangeLabel}
           </span>
         }
         headerLeftAction={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button
               onClick={goToPreviousWeek}
-              className="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-500 hover:text-indigo-600"
+              className="p-2 rounded-full transition-colors"
+              style={{ 
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-secondary)',
+              }}
               aria-label="Settimana precedente"
             >
-              <ChevronLeft size={22} strokeWidth={2.5} />
+              <ChevronLeft size={20} />
             </button>
             <button
               onClick={goToNextWeek}
-              className="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-500 hover:text-indigo-600"
+              className="p-2 rounded-full transition-colors"
+              style={{ 
+                backgroundColor: 'var(--bg-input)',
+                color: 'var(--text-secondary)',
+              }}
               aria-label="Settimana successiva"
             >
-              <ChevronRight size={22} strokeWidth={2.5} />
+              <ChevronRight size={20} />
             </button>
           </div>
         }
-        headerAction={
-          <button
-            onClick={() => setShowForm(true)}
-            className="p-2 -mr-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-            aria-label="Aggiungi impegno"
-          >
-            <Plus size={26} strokeWidth={2.5} />
-          </button>
-        }
       >
-        <div className="p-4 min-h-full bg-slate-50">
-          <div className="mb-4">
-            <h2 className="text-sm font-medium text-slate-400 uppercase tracking-wider ml-2">
-              Panoramica Settimanale
-            </h2>
-          </div>
-          
-          {/* Week View Grid */}
-          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-8">
+        <div className="min-h-full">
+          {/* Week Grid */}
+          <div 
+            className="rounded-card p-4 mb-6"
+            style={{ 
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-subtle)',
+            }}
+          >
             <WeekView
-              weekDates={weekDates}
               tasks={tasks.filter(t => t.scheduled_at !== null)}
               onDayPress={handleDayPress}
             />
           </div>
 
-          {/* Backlog Panel */}
-          <div className="pb-24">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400 mb-3 ml-2">
-              Backlog
-            </h2>
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-              <BacklogPanel onAddTask={() => setShowForm(true)} />
+          {/* Backlog Section */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3 px-1">
+              <h2 
+                className="text-sm font-semibold uppercase tracking-wide"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                Backlog
+              </h2>
             </div>
+            <BacklogPanel onAddTask={() => setShowForm(true)} />
           </div>
         </div>
       </AppShell>
+
+      {/* Floating FAB */}
+      <button
+        onClick={() => setShowForm(true)}
+        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95"
+        style={{
+          backgroundColor: 'var(--accent-primary)',
+          color: 'var(--text-inverse)',
+          boxShadow: '0 4px 20px var(--accent-glow)',
+        }}
+        aria-label="Aggiungi impegno"
+      >
+        <Plus size={28} strokeWidth={2.5} />
+      </button>
 
       {/* Task Form Modal */}
       {showForm && <TaskForm onClose={() => setShowForm(false)} />}

@@ -1,7 +1,7 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import type { Task } from '@/types/task'
-import { cn } from '@/lib/utils'
+import { cn, getWeightColor } from '@/lib/utils'
 
 interface BacklogItemProps {
   task: Task
@@ -9,11 +9,10 @@ interface BacklogItemProps {
 }
 
 /**
- * BacklogItem - Draggable task item for backlog
- * - Shows task title, description, and weight indicator
- * - Long press (150ms) to drag
- * - Tap to open detail
- * - Visual feedback during drag (cursor: grab)
+ * BacklogItem - Revolut Modern Style
+ * - Draggable task item
+ * - Weight pill top-right
+ * - Clean minimal design
  */
 export function BacklogItem({ task, onTap }: BacklogItemProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -25,6 +24,8 @@ export function BacklogItem({ task, onTap }: BacklogItemProps) {
     transform: CSS.Translate.toString(transform),
   }
 
+  const weightColor = getWeightColor(task.weight)
+
   return (
     <div
       ref={setNodeRef}
@@ -32,23 +33,46 @@ export function BacklogItem({ task, onTap }: BacklogItemProps) {
       {...attributes}
       onClick={() => !isDragging && onTap(task)}
       className={cn(
-        "modern-card p-3 flex items-start gap-3 cursor-grab active:cursor-grabbing touch-none select-none bg-white",
+        "relative p-4 rounded-card cursor-grab active:cursor-grabbing touch-none select-none transition-all duration-200",
         isDragging && "opacity-50 scale-95 shadow-xl rotate-2 z-50"
       )}
-      style={style}
+      style={{
+        ...style,
+        backgroundColor: 'var(--bg-card)',
+        border: `1px solid var(--border-subtle)`,
+        boxShadow: isDragging ? `0 8px 32px ${weightColor}40` : 'var(--shadow-soft)',
+      }}
     >
-      {/* Weight Indicator */}
-      <div
-        className="w-1 self-stretch rounded-full flex-shrink-0"
-        style={{ backgroundColor: `var(--color-weight-${task.weight})` }}
-      />
+      {/* Weight Badge - Top Right */}
+      <div 
+        className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full"
+        style={{ backgroundColor: weightColor + '15' }}
+      >
+        <span 
+          className="w-1.5 h-1.5 rounded-full"
+          style={{ backgroundColor: weightColor }}
+        />
+        <span 
+          className="text-xs font-bold"
+          style={{ color: weightColor }}
+        >
+          {task.weight}
+        </span>
+      </div>
 
-      <div className="flex-1 min-w-0 py-0.5">
-        <h3 className="font-medium text-sm text-slate-900 leading-tight">
+      {/* Content */}
+      <div className="pr-10">
+        <h3 
+          className="font-semibold text-sm leading-tight"
+          style={{ color: 'var(--text-primary)' }}
+        >
           {task.title}
         </h3>
         {task.description && (
-          <p className="text-xs text-slate-500 mt-1 line-clamp-1">
+          <p 
+            className="text-xs mt-1 line-clamp-1"
+            style={{ color: 'var(--text-secondary)' }}
+          >
             {task.description}
           </p>
         )}
